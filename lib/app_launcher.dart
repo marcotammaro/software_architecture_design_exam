@@ -4,12 +4,12 @@ import 'package:forat/views/lobbies_view.dart';
 import 'package:forat/views/profile_view.dart';
 import 'package:forat/views/search_view.dart';
 
-class AppLaunch extends StatefulWidget {
+class AppLauncher extends StatefulWidget {
   @override
-  _AppLaunchState createState() => _AppLaunchState();
+  _AppLauncherState createState() => _AppLauncherState();
 }
 
-class _AppLaunchState extends State<AppLaunch> {
+class _AppLauncherState extends State<AppLauncher> {
   int _currentIndex = 0;
 
   var _items = [

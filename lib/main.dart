@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:forat/app_launch.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forat/app_launcher.dart';
+import 'package:forat/bloc/lobbies_bloc.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiBlocProvider(
+      child: MyApp(),
+      providers: [
+        BlocProvider<LobbiesBloc>(
+          create: (BuildContext context) => LobbiesBloc(),
+        ),
+      ],
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(),
-      home: AppLaunch(),
+      home: AppLauncher(),
     );
   }
 }
