@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:forat/bloc/events/lobbies_event.dart';
 import 'package:forat/bloc/lobbies_bloc.dart';
+import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/models/lobby.dart';
 import 'package:forat/views/lobby_creation_view.dart';
 
@@ -12,6 +12,14 @@ class LobbiesView extends StatefulWidget {
 }
 
 class _LobbiesViewState extends State<LobbiesView> {
+  LobbyLogic _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = LobbyLogic(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +31,7 @@ class _LobbiesViewState extends State<LobbiesView> {
             itemCount: state.length,
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: onLobbyTap,
+                onTap: () => _controller.goToLobbyDetailedView(),
                 child: lobbyCell(),
               );
             },
@@ -41,10 +49,7 @@ class _LobbiesViewState extends State<LobbiesView> {
               FontAwesomeIcons.plus,
               color: Colors.black,
             ),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LobbyCreationView()),
-            ),
+            onPressed: () => _controller.goToLobbyCreationView(),
           ),
         ],
         title: Text(
@@ -79,10 +84,4 @@ class _LobbiesViewState extends State<LobbiesView> {
           ],
         ),
       );
-
-  // MARK: User Actions
-
-  void onLobbyTap() {
-    print("Lobby tapped");
-  }
 }

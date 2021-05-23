@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/models/topics.dart';
 
 class LobbyCreationView extends StatefulWidget {
@@ -7,6 +8,7 @@ class LobbyCreationView extends StatefulWidget {
 }
 
 class _LobbyCreationViewState extends State<LobbyCreationView> {
+  LobbyLogic _controller;
   final List<Color> clipColors = [
     Colors.red[300],
     Colors.blue[300],
@@ -24,6 +26,7 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
   @override
   void initState() {
     super.initState();
+    _controller = LobbyLogic(context);
     _nameController = TextEditingController();
     _descriptionController = TextEditingController();
     _selectedChip = null;
@@ -163,9 +166,10 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
   // MARK: User Actions
 
   void onSave() {
-    // TODO: check if _selectedChip != null
-    print(_nameController.text);
-    print(_descriptionController.text);
-    print(_selectedChip);
+    _controller.didTapOnCreateLobbyButton(
+      name: _nameController.text,
+      description: _descriptionController.text,
+      topic: TopicsHelper.fromInt(_selectedChip),
+    );
   }
 }
