@@ -6,6 +6,7 @@ import 'package:forat/views/lobby_creation_view.dart';
 import 'package:forat/views/lobby_details_view.dart';
 
 class LobbyLogic {
+  // Class Attributes
   BuildContext _context;
 
   // Constructor
@@ -32,10 +33,10 @@ class LobbyLogic {
   void didTapOnCreateLobbyButton({
     String name,
     String description,
-    Topics topic,
+    int topicIndex,
   }) {
     // Checking if user choose a topic for the lobby
-    if (topic == null) {
+    if (topicIndex == null) {
       showErrorAlert(
         _context,
         message: "Please, select a topic.",
@@ -50,6 +51,9 @@ class LobbyLogic {
       );
       return;
     }
+
+    // Converting topic index to Topic enum
+    Topics topic = TopicsHelper.fromInt(topicIndex);
 
     // TODO: Check that name is unique
     // TODO: Create and save the new lobby

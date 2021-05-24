@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/app_launcher.dart';
 import 'package:forat/bloc/lobbies_bloc.dart';
+import 'package:forat/bloc/messages_bloc.dart';
 
 void main() {
   runApp(
@@ -10,6 +11,9 @@ void main() {
       providers: [
         BlocProvider<LobbiesBloc>(
           create: (BuildContext context) => LobbiesBloc(),
+        ),
+        BlocProvider<MessagesBloc>(
+          create: (BuildContext context) => MessagesBloc(),
         ),
       ],
     ),

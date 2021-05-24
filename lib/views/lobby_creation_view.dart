@@ -169,7 +169,7 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
     _controller.didTapOnCreateLobbyButton(
       name: _nameController.text,
       description: _descriptionController.text,
-      topic: TopicsHelper.fromInt(_selectedChip),
+      topicIndex: _selectedChip,
     );
   }
 }
