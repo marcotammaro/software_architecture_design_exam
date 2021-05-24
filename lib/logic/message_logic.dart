@@ -13,7 +13,14 @@ class MessageLogic {
 
   void didTapOnSendButton(String text) {
     print(text);
-    BlocProvider.of<MessagesBloc>(_context).add(MessagesEvent.add(
-        Message(creator: User.empty(), dateTime: DateTime.now(), text: text)));
+    BlocProvider.of<MessagesBloc>(_context).add(
+      MessagesEvent.add(
+        Message(
+          creator: User.empty(),
+          dateTime: DateTime.now(),
+          text: text,
+        ),
+      ),
+    );
   }
 }

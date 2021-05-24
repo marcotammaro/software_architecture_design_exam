@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/bloc/messages_bloc.dart';
+import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/logic/message_logic.dart';
 import 'package:forat/models/message.dart';
+import 'package:forat/models/user.dart';
 
 class LobbyDetailsView extends StatefulWidget {
   @override
@@ -12,17 +14,21 @@ class LobbyDetailsView extends StatefulWidget {
 
 class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   bool _isButtonEnabled = true;
-  MessageLogic _controller;
+  MessageLogic _messagesController;
+  LobbyLogic _lobbiesController;
   ScrollController _scrollController;
-  final myController = TextEditingController();
+  final _textFieldController = TextEditingController();
   final ButtonStyle style = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20), primary: Colors.red);
   @override
   void initState() {
     super.initState();
-    _controller = MessageLogic(context);
+    _messagesController = MessageLogic(context);
+    _lobbiesController = LobbyLogic(context);
     _scrollController = ScrollController();
-
+    _lobbiesController
+        .checkForUserJoined(lobbyName: "")
+        .then((value) => setState(() => _isButtonEnabled = !value));
     SchedulerBinding.instance.addPostFrameCallback((_) {
       moveListToEnd();
     });
@@ -31,7 +37,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
     // This also removes the _printLatestValue listener.
-    myController.dispose();
+    _textFieldController.dispose();
     super.dispose();
   }
 
@@ -46,94 +52,108 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Expanded(
-              child: ListView.builder(
-                itemCount: messages.length,
-                shrinkWrap: true,
-                padding: EdgeInsets.only(top: 10, bottom: 10),
-                physics: const AlwaysScrollableScrollPhysics(),
-                controller: _scrollController,
-                itemBuilder: (context, index) {
-                  return Container(
-                    padding: EdgeInsets.only(
-                        left: 14, right: 14, top: 10, bottom: 10),
-                    child: Align(
-                      alignment: (messages[index].creator.username ==
-                              "MODIFICA" //TODO: DEVI MODIFICARE E AGGIUNGERE == ALL UTENTE DELL APP
-                          ? Alignment.topLeft
-                          : Alignment.topRight),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: (messages[index].creator.username ==
-                                  "MODIFICA" //TODO : DEVI MODIFICARE E AGGIUNGERE == ALL UTENTE DELL APP
-                              ? Colors.grey.shade200
-                              : Colors.blue[200]),
-                        ),
-                        padding: EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(messages[index].creator.username,
-                                style: TextStyle(fontSize: 10),
-                                textAlign: TextAlign.left),
-                            Text(
-                              messages[index].text,
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+              child: listViewMessage(messages),
             ),
-            Visibility(
-              visible: (_isButtonEnabled == true) ? true : false,
-              child: Container(
-                height: 50,
-                child: ElevatedButton(
-                  style: style,
-                  onPressed: () {
-                    isButtonEnabled();
-                  },
-                  child: const Text('Enabled'),
-                ),
-              ),
-              replacement: Container(
-                height: 50,
-                width: double.infinity,
-                color: Colors.white,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: 50,
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      color: Colors.white,
-                      child: TextField(
-                        controller: myController,
-                        enabled: true,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Enter a search term'),
-                      ),
-                    ),
-                    ElevatedButton(
-                      style: style,
-                      onPressed: () {
-                        _controller.didTapOnSendButton(myController.text);
-                        moveListToEnd();
-                      },
-                      child: const Text('Invia'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            bottomTab(context),
           ],
         );
       }),
+    );
+  }
+
+  Visibility bottomTab(BuildContext context) {
+    return Visibility(
+      visible: (_isButtonEnabled == true) ? true : false,
+      child: Container(
+        height: 50,
+        child: ElevatedButton(
+          style: style,
+          onPressed: () {
+            _lobbiesController
+                .didTapOnJoinLobbyButton(lobbyName: "", user: User.empty())
+                .then(
+                  (value) => setState(
+                    () => _isButtonEnabled = !value,
+                  ),
+                ); //TODO
+          },
+          child: const Text('Enabled'),
+        ),
+      ),
+      replacement: Container(
+        height: 50,
+        width: double.infinity,
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              height: 50,
+              width: MediaQuery.of(context).size.width * 0.75,
+              color: Colors.white,
+              child: TextField(
+                controller: _textFieldController,
+                enabled: true,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a search term'),
+              ),
+            ),
+            ElevatedButton(
+              style: style,
+              onPressed: () {
+                _messagesController
+                    .didTapOnSendButton(_textFieldController.text);
+                moveListToEnd();
+              },
+              child: const Text('Invia'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  ListView listViewMessage(List<Message> messages) {
+    return ListView.builder(
+      itemCount: messages.length,
+      shrinkWrap: true,
+      padding: EdgeInsets.only(top: 10, bottom: 10),
+      physics: const AlwaysScrollableScrollPhysics(),
+      controller: _scrollController,
+      itemBuilder: (context, index) {
+        return Container(
+          padding: EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
+          child: Align(
+            alignment: (messages[index].creator.username ==
+                    "MODIFICA" //TODO: DEVI MODIFICARE E AGGIUNGERE == ALL UTENTE DELL APP
+                ? Alignment.topLeft
+                : Alignment.topRight),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: (messages[index].creator.username ==
+                        "MODIFICA" //TODO : DEVI MODIFICARE E AGGIUNGERE == ALL UTENTE DELL APP
+                    ? Colors.grey.shade200
+                    : Colors.blue[200]),
+              ),
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(messages[index].creator.username,
+                      style: TextStyle(fontSize: 10),
+                      textAlign: TextAlign.left),
+                  Text(
+                    messages[index].text,
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -141,19 +161,6 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
     if (_scrollController.position.maxScrollExtent != null) {
       _scrollController.animateTo(_scrollController.position.maxScrollExtent,
           duration: Duration(milliseconds: 200), curve: Curves.bounceInOut);
-    }
-  }
-
-  bool isButtonEnabled() {
-    setState(() {});
-    if (_isButtonEnabled == true) {
-      _isButtonEnabled = false;
-
-      return true;
-    } else {
-      _isButtonEnabled = true;
-
-      return false;
     }
   }
 }

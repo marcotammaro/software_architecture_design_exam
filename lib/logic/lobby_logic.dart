@@ -61,6 +61,12 @@ class LobbyLogic {
     Navigator.of(_context).pop();
   }
 
-  void didTapOnJoinLobbyButton({String name, User user}) {}
+  Future<bool> didTapOnJoinLobbyButton({String lobbyName, User user}) async {
+    return true;
+  }
+
   void didTapOnSearchButton() {}
+  Future<bool> checkForUserJoined({String lobbyName}) async {
+    return false;
+  }
 }
