@@ -7,4 +7,10 @@ class User {
   List<Lobby> lobbies;
 
   User({this.username, this.email, this.birthdate, this.lobbies});
+  User.empty() {
+    this.username = "";
+    this.email = "";
+    this.birthdate = DateTime.now();
+    this.lobbies = [];
+  }
 }

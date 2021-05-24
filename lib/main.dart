@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/app_launcher.dart';
 import 'package:forat/bloc/lobbies_bloc.dart';
 import 'package:forat/bloc/messages_bloc.dart';
+import 'package:forat/views/lobby_details_view.dart';
 
 void main() {
   runApp(
