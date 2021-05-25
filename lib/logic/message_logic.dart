@@ -1,9 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/bloc/events/messages_event.dart';
 import 'package:forat/bloc/messages_bloc.dart';
 import 'package:forat/models/message.dart';
-import 'package:forat/models/user.dart';
 
 class MessageLogic {
   BuildContext _context;
@@ -12,11 +12,11 @@ class MessageLogic {
   MessageLogic(this._context);
 
   void didTapOnSendButton(String text) {
-    print(text);
+    if (FirebaseAuth.instance.currentUser == null) return;
     BlocProvider.of<MessagesBloc>(_context).add(
       MessagesEvent.add(
         Message(
-          creator: User.empty(),
+          username: FirebaseAuth.instance.currentUser.displayName,
           dateTime: DateTime.now(),
           text: text,
         ),

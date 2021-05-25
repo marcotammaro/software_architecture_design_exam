@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forat/models/topics.dart';
-import 'package:forat/models/user.dart';
 import 'package:forat/utility/show_error_alert.dart';
 import 'package:forat/views/lobby_creation_view.dart';
 import 'package:forat/views/lobby_details_view.dart';
@@ -61,7 +60,9 @@ class LobbyLogic {
     Navigator.of(_context).pop();
   }
 
-  Future<bool> didTapOnJoinLobbyButton({String lobbyName, User user}) async {
+  Future<bool> didTapOnJoinLobbyButton(
+      {String lobbyName, String username}) async {
+    if (username == null) return false;
     return true;
   }
 

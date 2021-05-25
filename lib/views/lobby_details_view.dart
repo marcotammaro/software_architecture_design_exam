@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,7 +6,6 @@ import 'package:forat/bloc/messages_bloc.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/logic/message_logic.dart';
 import 'package:forat/models/message.dart';
-import 'package:forat/models/user.dart';
 
 class LobbyDetailsView extends StatefulWidget {
   @override
@@ -70,7 +70,9 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
           style: style,
           onPressed: () {
             _lobbiesController
-                .didTapOnJoinLobbyButton(lobbyName: "", user: User.empty())
+                .didTapOnJoinLobbyButton(
+                    lobbyName: "",
+                    username: FirebaseAuth.instance.currentUser.displayName)
                 .then(
                   (value) => setState(
                     () => _isButtonEnabled = !value,
@@ -125,14 +127,14 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
         return Container(
           padding: EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
           child: Align(
-            alignment: (messages[index].creator.username ==
+            alignment: (messages[index].username ==
                     "MODIFICA" //TODO: DEVI MODIFICARE E AGGIUNGERE == ALL UTENTE DELL APP
                 ? Alignment.topLeft
                 : Alignment.topRight),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: (messages[index].creator.username ==
+                color: (messages[index].username ==
                         "MODIFICA" //TODO : DEVI MODIFICARE E AGGIUNGERE == ALL UTENTE DELL APP
                     ? Colors.grey.shade200
                     : Colors.blue[200]),
@@ -141,7 +143,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(messages[index].creator.username,
+                  Text(messages[index].username,
                       style: TextStyle(fontSize: 10),
                       textAlign: TextAlign.left),
                   Text(
