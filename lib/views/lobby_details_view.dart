@@ -104,6 +104,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
               onPressed: () {
                 _messagesController
                     .didTapOnSendButton(_textFieldController.text);
+                _textFieldController.clear();
                 moveListToEnd();
               },
               child: const Text('Invia'),
