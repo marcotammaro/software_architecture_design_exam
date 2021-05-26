@@ -129,14 +129,14 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
           padding: EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
           child: Align(
             alignment: (messages[index].username ==
-                    "MODIFICA" //TODO: DEVI MODIFICARE E AGGIUNGERE == ALL UTENTE DELL APP
+                    FirebaseAuth.instance.currentUser.displayName
                 ? Alignment.topLeft
                 : Alignment.topRight),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: (messages[index].username ==
-                        "MODIFICA" //TODO : DEVI MODIFICARE E AGGIUNGERE == ALL UTENTE DELL APP
+                        FirebaseAuth.instance.currentUser.displayName
                     ? Colors.grey.shade200
                     : Colors.blue[200]),
               ),
