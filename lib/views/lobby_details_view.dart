@@ -15,6 +15,7 @@ class LobbyDetailsView extends StatefulWidget {
 class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   bool _isButtonEnabled = true;
   MessageLogic _messagesController;
+
   LobbyLogic _lobbiesController;
   ScrollController _scrollController;
   final _textFieldController = TextEditingController();
@@ -23,6 +24,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   @override
   void initState() {
     super.initState();
+
     _messagesController = MessageLogic(context);
     _lobbiesController = LobbyLogic(context);
     _scrollController = ScrollController();
@@ -128,14 +130,14 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
         return Container(
           padding: EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
           child: Align(
-            alignment: (messages[index].username ==
+            alignment: (messages[index].username !=
                     FirebaseAuth.instance.currentUser.displayName
                 ? Alignment.topLeft
                 : Alignment.topRight),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: (messages[index].username ==
+                color: (messages[index].username !=
                         FirebaseAuth.instance.currentUser.displayName
                     ? Colors.grey.shade200
                     : Colors.blue[200]),
