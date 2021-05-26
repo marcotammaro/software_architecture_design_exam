@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forat/bloc/lobbies_bloc.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/models/lobby.dart';
-import 'package:forat/views/lobby_creation_view.dart';
 
 class LobbiesView extends StatefulWidget {
   @override
@@ -25,10 +24,9 @@ class _LobbiesViewState extends State<LobbiesView> {
     return Scaffold(
       appBar: appBar(),
       body: BlocBuilder<LobbiesBloc, List<Lobby>>(
-        builder: (context, state) {
-          print(state.length);
+        builder: (context, lobbies) {
           return ListView.builder(
-            itemCount: state.length,
+            itemCount: lobbies.length,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () => _controller.goToLobbyDetailedView(),
