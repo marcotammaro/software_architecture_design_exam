@@ -41,6 +41,13 @@ class AuthWrapper {
     }
   }
 
+  /// Return the username of the logged user as a string.
+  /// If no current user is logged in, the function return an empty string
+  String getCurrentUsername() {
+    if (FirebaseAuth.instance.currentUser == null) return "";
+    return FirebaseAuth.instance.currentUser.displayName;
+  }
+
   /// This function login an existing user with firebase auth.
   /// If an error occur, it will return a FirebaseAuthException otherwise it will return null
   Future<FirebaseAuthException> loginUser(

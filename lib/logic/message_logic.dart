@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/bloc/events/messages_event.dart';
 import 'package:forat/bloc/messages_bloc.dart';
+import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/models/message.dart';
 
 class MessageLogic {
@@ -16,7 +17,7 @@ class MessageLogic {
     BlocProvider.of<MessagesBloc>(_context).add(
       MessagesEvent.add(
         Message(
-          username: FirebaseAuth.instance.currentUser.displayName,
+          username: AuthWrapper.instance.getCurrentUsername(),
           dateTime: DateTime.now(),
           text: text,
         ),

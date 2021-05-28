@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/utility/date_time_firebase_helper.dart';
 
 class FirestoreWrapper {
@@ -19,7 +20,7 @@ class FirestoreWrapper {
 
   Future addLobby({String name, String description, int topic}) async {
     CollectionReference lobbies = firestore.collection('lobbies');
-    String username = FirebaseAuth.instance.currentUser.displayName;
+    String username = AuthWrapper.instance.getCurrentUsername();
     lobbies.add({
       "description": description,
       "name": name,
@@ -40,7 +41,7 @@ class FirestoreWrapper {
 
   Future addMessage({String text, DateTime dateTime, String lobbyName}) async {
     CollectionReference lobbies = firestore.collection('lobbies');
-    String username = FirebaseAuth.instance.currentUser.displayName;
+    String username = AuthWrapper.instance.getCurrentUsername();
     lobbies.where('name', isEqualTo: lobbyName).get().then((value) {
       String uid = value.docs.first.id;
       lobbies.doc(uid).collection('messages').add({
@@ -54,7 +55,7 @@ class FirestoreWrapper {
   // MARK: Get functions
   Future<List<QueryDocumentSnapshot<Object>>> getUserLobbies() async {
     CollectionReference lobbies = firestore.collection('lobbies');
-    String username = FirebaseAuth.instance.currentUser.displayName;
+    String username = AuthWrapper.instance.getCurrentUsername();
     QuerySnapshot<Object> data =
         await lobbies.where('users', arrayContains: username).get();
     return data.docs;

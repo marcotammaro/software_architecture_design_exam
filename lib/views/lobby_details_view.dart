@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/bloc/messages_bloc.dart';
+import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/logic/message_logic.dart';
 import 'package:forat/models/message.dart';
@@ -74,7 +75,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
             _lobbiesController
                 .didTapOnJoinLobbyButton(
                     lobbyName: "",
-                    username: FirebaseAuth.instance.currentUser.displayName)
+                    username: AuthWrapper.instance.getCurrentUsername())
                 .then(
                   (value) => setState(
                     () => _isButtonEnabled = !value,
@@ -131,14 +132,14 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
           padding: EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
           child: Align(
             alignment: (messages[index].username !=
-                    FirebaseAuth.instance.currentUser.displayName
+                    AuthWrapper.instance.getCurrentUsername()
                 ? Alignment.topLeft
                 : Alignment.topRight),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: (messages[index].username !=
-                        FirebaseAuth.instance.currentUser.displayName
+                        AuthWrapper.instance.getCurrentUsername()
                     ? Colors.grey.shade200
                     : Colors.blue[200]),
               ),
