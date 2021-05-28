@@ -29,8 +29,13 @@ class _LobbiesViewState extends State<LobbiesView> {
             itemCount: lobbies.length,
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: () => _controller.goToLobbyDetailedView(),
-                child: lobbyCell(),
+                onTap: () => _controller.goToLobbyDetailedView(lobbies[index]),
+                child: lobbyCell(
+                  lobbies[index].name,
+                  lobbies[index].lastMessage != null
+                      ? lobbies[index].lastMessage.text
+                      : "",
+                ),
               );
             },
           );
@@ -56,7 +61,7 @@ class _LobbiesViewState extends State<LobbiesView> {
         ),
       );
 
-  Widget lobbyCell() => Container(
+  Widget lobbyCell(String title, String lastMessage) => Container(
         height: 100,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -72,11 +77,11 @@ class _LobbiesViewState extends State<LobbiesView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Title",
+              title ?? "",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             Text(
-              "Last message",
+              lastMessage ?? "",
               style: TextStyle(fontSize: 14),
             ),
           ],

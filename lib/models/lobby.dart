@@ -1,24 +1,17 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:forat/models/topics.dart';
 import 'package:forat/utility/generate_random_keys.dart';
-
-enum LobbyTopic { sport, university, cinema, art, food }
+import 'package:forat/models/message.dart';
 
 class Lobby {
   String name;
   String description;
-  LobbyTopic topic;
-  List<User> users;
-  List<Message> messages;
+  Topics topic;
+  List<String> users;
+  Message lastMessage;
   String key;
 
-  Lobby({this.name, this.description, this.topic, this.users, this.messages})
+  Lobby({this.name, this.description, this.topic, this.users, this.lastMessage})
       : this.key = generateRandomKey();
   Lobby.withKey(
-      {this.name,
-      this.description,
-      this.topic,
-      this.users,
-      this.messages,
-      this.key});
+      {this.name, this.description, this.topic, this.users, this.key});
 }

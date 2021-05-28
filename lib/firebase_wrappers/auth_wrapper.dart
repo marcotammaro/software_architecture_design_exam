@@ -20,8 +20,8 @@ class AuthWrapper {
     String password,
   }) async {
     try {
-      bool exist =
-          await FirestoreWrapper.instance.checkForUsername(username: username);
+      bool exist = await FirestoreWrapper.instance
+          .checkForUniqueUsername(username: username);
 
       if (exist)
         return FirebaseAuthException(

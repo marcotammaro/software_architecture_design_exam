@@ -17,7 +17,7 @@ class MessageLogic {
 
   // Constructor
   MessageLogic(this._context, this._lobbyName) {
-    FirestoreWrapper.instance.getMessages(_lobbyName).then(
+    FirestoreWrapper.instance.getMessagesStream(_lobbyName).then(
       (value) {
         _stream = value.listen(onMessageEvent);
       },

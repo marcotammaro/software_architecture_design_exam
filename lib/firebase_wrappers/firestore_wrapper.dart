@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
+import 'package:forat/models/lobby.dart';
+import 'package:forat/models/message.dart';
+import 'package:forat/models/topics.dart';
 import 'package:forat/utility/date_time_firebase_helper.dart';
 
 class FirestoreWrapper {
@@ -32,6 +35,7 @@ class FirestoreWrapper {
   Future addUserToLobby({String lobbyName, String username}) async {
     CollectionReference lobbies = firestore.collection('lobbies');
     lobbies.where('name', isEqualTo: lobbyName).get().then((value) {
+      if (value.docs.isEmpty) return;
       String uid = value.docs.first.id;
       lobbies.doc(uid).update({
         "users": FieldValue.arrayUnion([username])
@@ -53,27 +57,58 @@ class FirestoreWrapper {
   }
 
   // MARK: Get functions
-  Future<List<QueryDocumentSnapshot<Object>>> getUserLobbies() async {
+
+  Future<List<Lobby>> getUserLobbies() async {
     CollectionReference lobbies = firestore.collection('lobbies');
     String username = AuthWrapper.instance.getCurrentUsername();
     QuerySnapshot<Object> data =
         await lobbies.where('users', arrayContains: username).get();
-    return data.docs;
+
+    List<Lobby> lobbyList = [];
+    for (var doc in data.docs) {
+      // Getting last message from this lobby
+      var messageList = await getMessages(doc.get('name'));
+      messageList.sort((a, b) {
+        return a.dateTime.compareTo(b.dateTime);
+      });
+
+      // Creating lobby
+      var lobby = Lobby(
+        name: doc.get('name'),
+        description: doc.get('description'),
+        topic: TopicsHelper.fromInt(doc.get('topic')),
+        users: List<String>.from(doc.get('users')),
+        lastMessage: messageList.isEmpty ? null : messageList.last,
+      );
+
+      lobbyList.add(lobby);
+    }
+
+    return lobbyList;
   }
 
-  // Future<List<QueryDocumentSnapshot<Object>>> getMessages(
-  //     String lobbyName) async {
-  //   CollectionReference lobbies = firestore.collection('lobbies');
-  //   QuerySnapshot<Object> lobby =
-  //       await lobbies.where('name', isEqualTo: lobbyName).get();
-  //   String uid = lobby.docs.first.id;
+  Future<List<Message>> getMessages(String lobbyName) async {
+    CollectionReference lobbies = firestore.collection('lobbies');
+    QuerySnapshot<Object> lobby =
+        await lobbies.where('name', isEqualTo: lobbyName).get();
+    String uid = lobby.docs.first.id;
 
-  //   QuerySnapshot<Object> messages =
-  //       await lobbies.doc(uid).collection('messages').get();
-  //   return messages.docs;
-  // }
+    QuerySnapshot<Object> messages =
+        await lobbies.doc(uid).collection('messages').get();
 
-  Future<Stream<QuerySnapshot>> getMessages(String lobbyName) async {
+    List<Message> messageList = [];
+    for (var msgDoc in messages.docs) {
+      messageList.add(Message(
+        dateTime: DateTimeFirebaseHelper.fromFirestore(msgDoc.get('dateTime')),
+        text: msgDoc.get('text'),
+        username: msgDoc.get('creator'),
+      ));
+    }
+
+    return messageList;
+  }
+
+  Future<Stream<QuerySnapshot>> getMessagesStream(String lobbyName) async {
     CollectionReference lobbies = firestore.collection('lobbies');
     QuerySnapshot<Object> lobby =
         await lobbies.where('name', isEqualTo: lobbyName).get();
@@ -83,8 +118,17 @@ class FirestoreWrapper {
   }
 
   /// Return true if the username already exist on the database, false otherwise
-  Future<bool> checkForUsername({String username}) async {
+  Future<bool> checkForUniqueUsername({String username}) async {
     var document = await firestore.collection('users').doc(username).get();
     return (document.exists);
+  }
+
+  /// Return true if the lobby name already exist on the database, false otherwise
+  Future<bool> checkForUniqueLobbyName({String lobbyName}) async {
+    var document = await firestore
+        .collection('lobbies')
+        .where('name', isEqualTo: lobbyName)
+        .get();
+    return (document.docs.length > 0);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:forat/models/lobby.dart';
 
-enum LobbiesEventType { add, delete }
+enum LobbiesEventType { add, delete, deleteAll }
 
 class LobbiesEvent {
   LobbiesEventType type;
@@ -16,5 +16,9 @@ class LobbiesEvent {
   LobbiesEvent.delete(Lobby _lobby) {
     this.type = LobbiesEventType.delete;
     this.lobby = _lobby;
+  }
+
+  LobbiesEvent.deleteAll() {
+    this.type = LobbiesEventType.deleteAll;
   }
 }

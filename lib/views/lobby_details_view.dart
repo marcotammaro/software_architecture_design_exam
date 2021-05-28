@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,9 +5,13 @@ import 'package:forat/bloc/messages_bloc.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/logic/message_logic.dart';
+import 'package:forat/models/lobby.dart';
 import 'package:forat/models/message.dart';
 
 class LobbyDetailsView extends StatefulWidget {
+  final Lobby lobby;
+
+  const LobbyDetailsView({Key key, @required this.lobby}) : super(key: key);
   @override
   _LobbyDetailsViewState createState() => _LobbyDetailsViewState();
 }
@@ -26,7 +29,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   void initState() {
     super.initState();
 
-    _messagesController = MessageLogic(context, "Lobby2");
+    _messagesController = MessageLogic(context, widget.lobby.name);
     _lobbiesController = LobbyLogic(context);
     _scrollController = ScrollController();
     _lobbiesController

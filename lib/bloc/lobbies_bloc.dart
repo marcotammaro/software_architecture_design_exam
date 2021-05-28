@@ -16,6 +16,9 @@ class LobbiesBloc extends Bloc<LobbiesEvent, List<Lobby>> {
       case LobbiesEventType.delete:
         yield state;
         break;
+      case LobbiesEventType.deleteAll:
+        yield [];
+        break;
       default:
         addError(Exception('unsupported event'));
     }
