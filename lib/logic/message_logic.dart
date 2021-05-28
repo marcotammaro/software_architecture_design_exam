@@ -23,4 +23,18 @@ class MessageLogic {
       ),
     );
   }
+
+  /*
+
+  FirestoreWrapper.instance.getMessages("Lobby2").then((value) {
+      StreamSubscription<QuerySnapshot> stream = value.listen((event) {
+        for (var y in event.docs) print(y.get('text'));
+        //bloc
+      });
+
+      // Per cancellare la subscription:
+      // stream.cancel();
+    });
+
+  */
 }

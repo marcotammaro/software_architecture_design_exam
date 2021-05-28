@@ -16,8 +16,6 @@ dependencies:
   cloud_firestore: ^2.1.0
   flutter_bloc: ^7.0.0
   flutter_local_notifications: ^5.0.0+4
-  json_annotation: ^4.0.1
-  json_serializable: ^4.1.1
   font_awesome_flutter: ^9.0.0
 
 dev_dependencies:

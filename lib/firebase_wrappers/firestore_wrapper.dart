@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:forat/utility/date_time_firebase_helper.dart';
 
 class FirestoreWrapper {
   // MARK: Singleton management
@@ -15,13 +17,69 @@ class FirestoreWrapper {
     await users.doc(username).set({"username": username});
   }
 
-  void addLobby() {}
-  void addUserToLobby() {}
-  void addMessage() {}
+  Future addLobby({String name, String description, int topic}) async {
+    CollectionReference lobbies = firestore.collection('lobbies');
+    String username = FirebaseAuth.instance.currentUser.displayName;
+    lobbies.add({
+      "description": description,
+      "name": name,
+      "topic": topic,
+      "users": [username]
+    });
+  }
+
+  Future addUserToLobby({String lobbyName, String username}) async {
+    CollectionReference lobbies = firestore.collection('lobbies');
+    lobbies.where('name', isEqualTo: lobbyName).get().then((value) {
+      String uid = value.docs.first.id;
+      lobbies.doc(uid).update({
+        "users": FieldValue.arrayUnion([username])
+      });
+    });
+  }
+
+  Future addMessage({String text, DateTime dateTime, String lobbyName}) async {
+    CollectionReference lobbies = firestore.collection('lobbies');
+    String username = FirebaseAuth.instance.currentUser.displayName;
+    lobbies.where('name', isEqualTo: lobbyName).get().then((value) {
+      String uid = value.docs.first.id;
+      lobbies.doc(uid).collection('messages').add({
+        "text": text,
+        "creator": username,
+        "dateTime": dateTime.toFirestore(),
+      });
+    });
+  }
 
   // MARK: Get functions
-  void getLobbies() {}
-  void getMessages() {}
+  Future<List<QueryDocumentSnapshot<Object>>> getUserLobbies() async {
+    CollectionReference lobbies = firestore.collection('lobbies');
+    String username = FirebaseAuth.instance.currentUser.displayName;
+    QuerySnapshot<Object> data =
+        await lobbies.where('users', arrayContains: username).get();
+    return data.docs;
+  }
+
+  // Future<List<QueryDocumentSnapshot<Object>>> getMessages(
+  //     String lobbyName) async {
+  //   CollectionReference lobbies = firestore.collection('lobbies');
+  //   QuerySnapshot<Object> lobby =
+  //       await lobbies.where('name', isEqualTo: lobbyName).get();
+  //   String uid = lobby.docs.first.id;
+
+  //   QuerySnapshot<Object> messages =
+  //       await lobbies.doc(uid).collection('messages').get();
+  //   return messages.docs;
+  // }
+
+  Future<Stream<QuerySnapshot>> getMessages(String lobbyName) async {
+    CollectionReference lobbies = firestore.collection('lobbies');
+    QuerySnapshot<Object> lobby =
+        await lobbies.where('name', isEqualTo: lobbyName).get();
+    String uid = lobby.docs.first.id;
+
+    return lobbies.doc(uid).collection('messages').snapshots();
+  }
 
   /// Return true if the username already exist on the database, false otherwise
   Future<bool> checkForUsername({String username}) async {
