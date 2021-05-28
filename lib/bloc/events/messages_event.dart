@@ -1,6 +1,6 @@
 import 'package:forat/models/message.dart';
 
-enum MessagesEventType { add, delete }
+enum MessagesEventType { add, delete, deleteAll }
 
 class MessagesEvent {
   MessagesEventType type;
@@ -16,5 +16,8 @@ class MessagesEvent {
   MessagesEvent.delete(Message _message) {
     this.type = MessagesEventType.delete;
     this.message = _message;
+  }
+  MessagesEvent.deleteAll() {
+    this.type = MessagesEventType.deleteAll;
   }
 }

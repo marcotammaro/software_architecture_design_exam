@@ -16,6 +16,9 @@ class MessagesBloc extends Bloc<MessagesEvent, List<Message>> {
       case MessagesEventType.delete:
         yield state;
         break;
+      case MessagesEventType.deleteAll:
+        yield [];
+        break;
       default:
         addError(Exception('unsupported event'));
     }

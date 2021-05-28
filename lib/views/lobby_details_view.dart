@@ -26,7 +26,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   void initState() {
     super.initState();
 
-    _messagesController = MessageLogic(context);
+    _messagesController = MessageLogic(context, "Lobby2");
     _lobbiesController = LobbyLogic(context);
     _scrollController = ScrollController();
     _lobbiesController
@@ -41,6 +41,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
     // Clean up the controller when the widget is removed from the widget tree.
     // This also removes the _printLatestValue listener.
     _textFieldController.dispose();
+    _messagesController.stopListenMessages();
     super.dispose();
   }
 
@@ -121,6 +122,9 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   }
 
   ListView listViewMessage(List<Message> messages) {
+    messages.sort((a, b) {
+      return a.dateTime.compareTo(b.dateTime);
+    });
     return ListView.builder(
       itemCount: messages.length,
       shrinkWrap: true,
