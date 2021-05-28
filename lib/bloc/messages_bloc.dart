@@ -11,6 +11,9 @@ class MessagesBloc extends Bloc<MessagesEvent, List<Message>> {
       case MessagesEventType.add:
         List<Message> newState = List.from(state);
         newState.add(event.message);
+        newState.sort((a, b) {
+          return a.dateTime.compareTo(b.dateTime);
+        });
         yield newState;
         break;
       case MessagesEventType.delete:

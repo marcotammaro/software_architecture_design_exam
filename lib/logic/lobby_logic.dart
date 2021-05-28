@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/bloc/events/lobbies_event.dart';
 import 'package:forat/bloc/lobbies_bloc.dart';
+import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
 import 'package:forat/models/lobby.dart';
-import 'package:forat/models/message.dart';
 import 'package:forat/models/topics.dart';
 import 'package:forat/utility/show_error_alert.dart';
 import 'package:forat/views/lobby_creation_view.dart';
@@ -91,14 +91,21 @@ class LobbyLogic {
     }
 
     // save lobby to firestore
-    await FirestoreWrapper.instance.addLobby(
+    String id = await FirestoreWrapper.instance.addLobby(
       name: name,
       description: description,
       topic: topicIndex,
     );
 
-    // reload lobby data
-    _loadLobby();
+    // adding new lobby to bloc
+    BlocProvider.of<LobbiesBloc>(_context).add(LobbiesEvent.add(Lobby.withKey(
+      key: id,
+      name: name,
+      description: description,
+      topic: TopicsHelper.fromInt(topicIndex),
+      users: [AuthWrapper.instance.getCurrentUsername()],
+      lastMessage: null,
+    )));
 
     // return to lobbiesView
     Navigator.of(_context).pop();

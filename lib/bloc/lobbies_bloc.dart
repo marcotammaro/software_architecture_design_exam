@@ -11,9 +11,14 @@ class LobbiesBloc extends Bloc<LobbiesEvent, List<Lobby>> {
       case LobbiesEventType.add:
         List<Lobby> newState = List.from(state);
         newState.add(event.lobby);
+        newState.sort((a, b) {
+          if (a.lastMessage == null || b.lastMessage == null) return 0;
+          return a.lastMessage.dateTime.compareTo(b.lastMessage.dateTime);
+        });
         yield newState;
         break;
       case LobbiesEventType.delete:
+        // TODO
         yield state;
         break;
       case LobbiesEventType.deleteAll:

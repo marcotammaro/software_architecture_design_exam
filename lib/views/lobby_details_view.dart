@@ -125,9 +125,6 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   }
 
   ListView listViewMessage(List<Message> messages) {
-    messages.sort((a, b) {
-      return a.dateTime.compareTo(b.dateTime);
-    });
     return ListView.builder(
       itemCount: messages.length,
       shrinkWrap: true,

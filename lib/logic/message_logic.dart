@@ -47,7 +47,7 @@ class MessageLogic {
     if (FirebaseAuth.instance.currentUser == null) return;
     var dateTime = DateTime.now();
     FirestoreWrapper.instance
-        .addMessage(dateTime: dateTime, lobbyName: 'Lobby2', text: text);
+        .addMessage(dateTime: dateTime, lobbyName: _lobbyName, text: text);
   }
 
   /*

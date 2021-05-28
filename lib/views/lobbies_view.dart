@@ -61,30 +61,36 @@ class _LobbiesViewState extends State<LobbiesView> {
         ),
       );
 
-  Widget lobbyCell(String title, String lastMessage) => Container(
-        height: 100,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(color: Colors.grey.withAlpha(100), blurRadius: 10)
-          ],
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title ?? "",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            Text(
-              lastMessage ?? "",
-              style: TextStyle(fontSize: 14),
-            ),
-          ],
-        ),
-      );
+  Widget lobbyCell(String title, String lastMessage) {
+    bool hasLastMessage = (lastMessage != null && lastMessage != "");
+    return Container(
+      height: 100,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.grey.withAlpha(100), blurRadius: 10)
+        ],
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title ?? "",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          ),
+          SizedBox(height: hasLastMessage ? 5 : 0),
+          hasLastMessage
+              ? Text(
+                  lastMessage ?? "",
+                  style: TextStyle(fontSize: 14),
+                )
+              : const SizedBox.shrink(),
+        ],
+      ),
+    );
+  }
 }

@@ -13,5 +13,10 @@ class Lobby {
   Lobby({this.name, this.description, this.topic, this.users, this.lastMessage})
       : this.key = generateRandomKey();
   Lobby.withKey(
-      {this.name, this.description, this.topic, this.users, this.key});
+      {this.name,
+      this.description,
+      this.topic,
+      this.users,
+      this.key,
+      this.lastMessage});
 }
