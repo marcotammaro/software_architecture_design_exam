@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/bloc/messages_bloc.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
@@ -18,65 +17,67 @@ class LobbyDetailsView extends StatefulWidget {
 }
 
 class _LobbyDetailsViewState extends State<LobbyDetailsView> {
-  bool _isButtonEnabled = true;
   MessageLogic _messagesController;
-  double _bottomBarHeight = 50;
   LobbyLogic _lobbiesController;
-  ScrollController _scrollController;
+  bool _isButtonEnabled = true;
+  int _keyboardListnerID;
+  double _bottomBarHeight = 50;
+  final _scrollController = ScrollController();
+  final _keyboardVisibility = KeyboardVisibilityNotification();
   final _textFieldController = TextEditingController();
   final ButtonStyle style = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 20), primary: Colors.red);
+    textStyle: const TextStyle(fontSize: 20),
+    primary: Colors.red,
+  );
+
   @override
   void initState() {
     super.initState();
 
     _messagesController = MessageLogic(context, widget.lobby.name);
     _lobbiesController = LobbyLogic(context);
-    _scrollController = ScrollController();
     _lobbiesController
         .checkForUserJoined(lobby: widget.lobby)
         .then((value) => setState(() => _isButtonEnabled = !value));
 
-    KeyboardVisibilityNotification().addNewListener(
+    _keyboardListnerID = _keyboardVisibility.addNewListener(
       onChange: (bool visible) {
         moveListToEnd();
       },
     );
   }
 
+  @override
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
-    // This also removes the _printLatestValue listener.
     _textFieldController.dispose();
     _messagesController.stopListenMessages();
+    _keyboardVisibility.removeListener(_keyboardListnerID);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      moveListToEnd();
-    });
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.red),
-      backgroundColor: Colors.green,
       body: BlocBuilder<MessagesBloc, List<Message>>(
-          builder: (context, messages) {
-        return Column(
-          children: <Widget>[
-            Expanded(
-              child: listViewMessage(messages),
+        builder: (context, messages) {
+          return SafeArea(
+            child: Column(
+              children: <Widget>[
+                Expanded(child: listViewMessage(messages)),
+                bottomTab(context),
+              ],
             ),
-            bottomTab(context),
-          ],
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 
   Visibility bottomTab(BuildContext context) {
     return Visibility(
-      visible: (_isButtonEnabled == true) ? true : false,
+      visible: (_isButtonEnabled) ? true : false,
       child: Container(
         height: _bottomBarHeight,
         child: ElevatedButton(
@@ -84,12 +85,10 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
           onPressed: () {
             _lobbiesController
                 .didTapOnJoinLobbyButton(
-                    lobbyName: "",
+                    lobbyName: widget.lobby.name,
                     username: AuthWrapper.instance.getCurrentUsername())
                 .then(
-                  (value) => setState(
-                    () => _isButtonEnabled = !value,
-                  ),
+                  (value) => setState(() => _isButtonEnabled = !value),
                 ); //TODO
           },
           child: const Text('Enabled'),
@@ -103,15 +102,16 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              height: _bottomBarHeight - 2,
+              height: _bottomBarHeight,
               width: MediaQuery.of(context).size.width * 0.75,
               color: Colors.white,
               child: TextField(
                 controller: _textFieldController,
                 enabled: true,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter a search term'),
+                  border: InputBorder.none,
+                  hintText: 'Enter a message',
+                ),
               ),
             ),
             ElevatedButton(
@@ -120,7 +120,6 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
                 _messagesController
                     .didTapOnSendButton(_textFieldController.text);
                 _textFieldController.clear();
-                moveListToEnd();
               },
               child: const Text('Invia'),
             ),
@@ -131,15 +130,18 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   }
 
   ListView listViewMessage(List<Message> messages) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      moveListToEnd();
+    });
     return ListView.builder(
+      padding: EdgeInsets.symmetric(vertical: 10),
       itemCount: messages.length,
       shrinkWrap: true,
-      padding: EdgeInsets.only(top: 10, bottom: 10),
-      physics: const AlwaysScrollableScrollPhysics(),
+      // physics: const AlwaysScrollableScrollPhysics(),
       controller: _scrollController,
       itemBuilder: (context, index) {
         return Container(
-          padding: EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
+          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           child: Align(
             alignment: (messages[index].username !=
                     AuthWrapper.instance.getCurrentUsername()
@@ -174,12 +176,12 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   }
 
   void moveListToEnd() {
-    print(_scrollController.position.maxScrollExtent);
     _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent +
-            1000 +
-            MediaQuery.of(context).viewInsets.bottom,
-        duration: Duration(milliseconds: 200),
-        curve: Curves.easeIn);
+      _scrollController.position.maxScrollExtent +
+          _bottomBarHeight +
+          MediaQuery.of(context).viewInsets.bottom,
+      duration: Duration(milliseconds: 200),
+      curve: Curves.easeIn,
+    );
   }
 }
