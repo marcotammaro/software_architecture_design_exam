@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/bloc/events/lobbies_event.dart';
@@ -124,7 +125,8 @@ class LobbyLogic {
 
   // TODO
   void didTapOnSearchButton() {}
-  Future<bool> checkForUserJoined({String lobbyName}) async {
-    return false;
+
+  Future<bool> checkForUserJoined({Lobby lobby}) async {
+    return lobby.users.contains(AuthWrapper.instance.getCurrentUsername());
   }
 }

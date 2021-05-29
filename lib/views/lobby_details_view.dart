@@ -7,6 +7,7 @@ import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/logic/message_logic.dart';
 import 'package:forat/models/lobby.dart';
 import 'package:forat/models/message.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 class LobbyDetailsView extends StatefulWidget {
   final Lobby lobby;
@@ -19,7 +20,7 @@ class LobbyDetailsView extends StatefulWidget {
 class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   bool _isButtonEnabled = true;
   MessageLogic _messagesController;
-
+  double _bottomBarHeight = 50;
   LobbyLogic _lobbiesController;
   ScrollController _scrollController;
   final _textFieldController = TextEditingController();
@@ -33,11 +34,14 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
     _lobbiesController = LobbyLogic(context);
     _scrollController = ScrollController();
     _lobbiesController
-        .checkForUserJoined(lobbyName: "")
+        .checkForUserJoined(lobby: widget.lobby)
         .then((value) => setState(() => _isButtonEnabled = !value));
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      moveListToEnd();
-    });
+
+    KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        moveListToEnd();
+      },
+    );
   }
 
   void dispose() {
@@ -50,13 +54,15 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      moveListToEnd();
+    });
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.red),
       backgroundColor: Colors.green,
       body: BlocBuilder<MessagesBloc, List<Message>>(
           builder: (context, messages) {
         return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Expanded(
               child: listViewMessage(messages),
@@ -72,7 +78,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
     return Visibility(
       visible: (_isButtonEnabled == true) ? true : false,
       child: Container(
-        height: 50,
+        height: _bottomBarHeight,
         child: ElevatedButton(
           style: style,
           onPressed: () {
@@ -90,14 +96,14 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
         ),
       ),
       replacement: Container(
-        height: 50,
+        height: _bottomBarHeight,
         width: double.infinity,
         color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              height: 50,
+              height: _bottomBarHeight - 2,
               width: MediaQuery.of(context).size.width * 0.75,
               color: Colors.white,
               child: TextField(
@@ -168,9 +174,12 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   }
 
   void moveListToEnd() {
-    if (_scrollController.position.maxScrollExtent != null) {
-      _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 200), curve: Curves.bounceInOut);
-    }
+    print(_scrollController.position.maxScrollExtent);
+    _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent +
+            1000 +
+            MediaQuery.of(context).viewInsets.bottom,
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeIn);
   }
 }
