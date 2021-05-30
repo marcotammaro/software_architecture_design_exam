@@ -18,7 +18,6 @@ class LobbyDetailsView extends StatefulWidget {
 
 class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   MessageLogic _messagesController;
-  LobbyLogic _lobbiesController;
   bool _isButtonEnabled = true;
   int _keyboardListnerID;
   double _bottomBarHeight = 50;
@@ -35,9 +34,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
     super.initState();
 
     _messagesController = MessageLogic(context, widget.lobby.name);
-    _lobbiesController = LobbyLogic(context);
-    _lobbiesController
-        .checkForUserJoined(lobby: widget.lobby)
+    LobbyLogic.checkForUserJoined(lobby: widget.lobby)
         .then((value) => setState(() => _isButtonEnabled = !value));
 
     _keyboardListnerID = _keyboardVisibility.addNewListener(
@@ -83,13 +80,12 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
         child: ElevatedButton(
           style: style,
           onPressed: () {
-            _lobbiesController
-                .didTapOnJoinLobbyButton(
+            LobbyLogic.didTapOnJoinLobbyButton(
                     lobbyName: widget.lobby.name,
                     username: AuthWrapper.instance.getCurrentUsername())
                 .then(
-                  (value) => setState(() => _isButtonEnabled = !value),
-                ); //TODO
+              (value) => setState(() => _isButtonEnabled = !value),
+            ); //TODO
           },
           child: const Text('Enabled'),
         ),

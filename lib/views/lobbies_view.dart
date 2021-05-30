@@ -29,6 +29,12 @@ class _LobbiesViewState extends State<LobbiesView> {
   }
 
   @override
+  void dispose() {
+    _controller.stopListenLobbies();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),

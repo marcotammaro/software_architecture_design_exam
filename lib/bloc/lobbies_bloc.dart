@@ -15,7 +15,8 @@ class LobbiesBloc extends Bloc<LobbiesEvent, List<Lobby>> {
           if (a.lastMessage == null || b.lastMessage == null) return 0;
           return a.lastMessage.dateTime.compareTo(b.lastMessage.dateTime);
         });
-        yield newState;
+
+        yield newState.reversed.toList();
         break;
       case LobbiesEventType.delete:
         // TODO

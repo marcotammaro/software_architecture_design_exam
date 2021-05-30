@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forat/logic/lobby_logic.dart';
+import 'package:forat/models/lobby.dart';
 import 'package:forat/models/topics.dart';
 
 class LobbyCreationView extends StatefulWidget {
@@ -8,7 +9,6 @@ class LobbyCreationView extends StatefulWidget {
 }
 
 class _LobbyCreationViewState extends State<LobbyCreationView> {
-  LobbyLogic _controller;
   TextEditingController _nameController;
   TextEditingController _descriptionController;
   int _selectedChip;
@@ -16,7 +16,6 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
   @override
   void initState() {
     super.initState();
-    _controller = LobbyLogic(context);
     _nameController = TextEditingController();
     _descriptionController = TextEditingController();
     _selectedChip = null;
@@ -156,11 +155,18 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
 
   // MARK: User Actions
 
-  void onSave() {
-    _controller.didTapOnCreateLobbyButton(
+  void onSave() async {
+    bool completed = await LobbyLogic.didTapOnCreateLobbyButton(
+      context,
       name: _nameController.text,
       description: _descriptionController.text,
       topicIndex: _selectedChip,
     );
+    if (completed)
+      Navigator.pop(context, {
+        'name': _nameController.text,
+        'description': _descriptionController.text,
+        'topicIndex': _selectedChip,
+      });
   }
 }
