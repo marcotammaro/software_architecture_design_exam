@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum Topics {
   football,
   cooking,
@@ -19,5 +21,28 @@ extension TopicsHelper on Topics {
   static Topics fromInt(int index) {
     if (index == null) return null;
     return Topics.values[index];
+  }
+
+  Color color() {
+    if (this.toInt() > 9 || this.toInt() < 0) return Colors.black;
+
+    final List<Color> colors = [
+      Colors.red[700],
+      Colors.blue[300],
+      Colors.yellow[300],
+      Colors.green[300],
+      Colors.purple[300],
+      Colors.brown[300],
+      Colors.amber[800],
+      Colors.grey[300],
+      Colors.teal[700],
+      Colors.deepOrange[300],
+    ];
+
+    return colors[this.toInt()].withAlpha(100);
+  }
+
+  String name() {
+    return this.toString().split('.').last;
   }
 }

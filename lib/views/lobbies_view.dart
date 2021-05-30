@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forat/bloc/lobbies_bloc.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/models/lobby.dart';
+import 'package:forat/models/topics.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LobbiesView extends StatefulWidget {
@@ -43,12 +44,7 @@ class _LobbiesViewState extends State<LobbiesView> {
                         return GestureDetector(
                           onTap: () =>
                               _controller.goToLobbyDetailedView(lobbies[index]),
-                          child: lobbyCell(
-                            lobbies[index].name,
-                            lobbies[index].lastMessage != null
-                                ? lobbies[index].lastMessage.text
-                                : "",
-                          ),
+                          child: lobbyCell(lobbies[index]),
                         );
                       },
                     );
@@ -76,7 +72,7 @@ class _LobbiesViewState extends State<LobbiesView> {
       child: ListView.builder(
         itemCount: 10,
         itemBuilder: (_, __) {
-          return lobbyCell("", "");
+          return lobbyCell(Lobby(name: "", description: "", topic: Topics.art));
         },
       ),
     );
@@ -99,10 +95,10 @@ class _LobbiesViewState extends State<LobbiesView> {
         ),
       );
 
-  Widget lobbyCell(String title, String lastMessage) {
-    bool hasLastMessage = (lastMessage != null && lastMessage != "");
+  Widget lobbyCell(Lobby lobby) {
+    bool hasLastMessage = lobby.lastMessage != null;
+
     return Container(
-      height: 100,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
@@ -110,25 +106,38 @@ class _LobbiesViewState extends State<LobbiesView> {
           BoxShadow(color: Colors.grey.withAlpha(100), blurRadius: 10)
         ],
       ),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title ?? "",
+            lobby.name ?? "",
             overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
           SizedBox(height: hasLastMessage ? 5 : 0),
           hasLastMessage
               ? Text(
-                  lastMessage ?? "",
+                  lobby.lastMessage.text ?? "",
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14),
                 )
               : const SizedBox.shrink(),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Chip(
+              elevation: 0,
+              backgroundColor: lobby.topic.color(),
+              label: Text(
+                lobby.topic.name(),
+                style: TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

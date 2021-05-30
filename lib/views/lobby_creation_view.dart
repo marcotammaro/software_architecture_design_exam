@@ -9,16 +9,6 @@ class LobbyCreationView extends StatefulWidget {
 
 class _LobbyCreationViewState extends State<LobbyCreationView> {
   LobbyLogic _controller;
-  final List<Color> clipColors = [
-    Colors.red[300],
-    Colors.blue[300],
-    Colors.yellow[300],
-    Colors.green[300],
-    Colors.teal[300],
-    Colors.purple[300],
-    Colors.brown[300]
-  ];
-
   TextEditingController _nameController;
   TextEditingController _descriptionController;
   int _selectedChip;
@@ -144,8 +134,9 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
       );
 
   Widget topicButton(int index) {
-    Color chipColor = clipColors[index % clipColors.length].withAlpha(100);
-    String title = Topics.values[index].toString().split('.').last;
+    Topics topic = TopicsHelper.fromInt(index);
+    Color chipColor = topic.color();
+    String title = topic.name();
 
     return GestureDetector(
       onTap: () => setState(() => _selectedChip = index),
