@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forat/bloc/lobbies_bloc.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/models/lobby.dart';
+import 'package:shimmer/shimmer.dart';
 
 class LobbiesView extends StatefulWidget {
   @override
@@ -12,11 +13,18 @@ class LobbiesView extends StatefulWidget {
 
 class _LobbiesViewState extends State<LobbiesView> {
   LobbyLogic _controller;
+  bool _haveLobbies;
 
   @override
   void initState() {
     super.initState();
     _controller = LobbyLogic(context);
+
+    Future.delayed(Duration.zero).then((value) async {
+      _controller
+          .userHaveLobbies()
+          .then((value) => setState(() => _haveLobbies = value));
+    });
   }
 
   @override
@@ -25,20 +33,50 @@ class _LobbiesViewState extends State<LobbiesView> {
       appBar: appBar(),
       body: BlocBuilder<LobbiesBloc, List<Lobby>>(
         builder: (context, lobbies) {
-          return ListView.builder(
-            itemCount: lobbies.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () => _controller.goToLobbyDetailedView(lobbies[index]),
-                child: lobbyCell(
-                  lobbies[index].name,
-                  lobbies[index].lastMessage != null
-                      ? lobbies[index].lastMessage.text
-                      : "",
-                ),
-              );
-            },
-          );
+          return (_haveLobbies == null)
+              ? shimmer()
+              : !_haveLobbies
+                  ? noLobby()
+                  : ListView.builder(
+                      itemCount: lobbies.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () =>
+                              _controller.goToLobbyDetailedView(lobbies[index]),
+                          child: lobbyCell(
+                            lobbies[index].name,
+                            lobbies[index].lastMessage != null
+                                ? lobbies[index].lastMessage.text
+                                : "",
+                          ),
+                        );
+                      },
+                    );
+        },
+      ),
+    );
+  }
+
+  Widget noLobby() {
+    return Center(
+      child: Text(
+          'No lobbies found.\n\nStart by adding a lobby\nor serching for one.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          )),
+    );
+  }
+
+  Widget shimmer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300],
+      highlightColor: Colors.grey[100],
+      child: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (_, __) {
+          return lobbyCell("", "");
         },
       ),
     );
@@ -80,12 +118,14 @@ class _LobbiesViewState extends State<LobbiesView> {
         children: [
           Text(
             title ?? "",
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
           SizedBox(height: hasLastMessage ? 5 : 0),
           hasLastMessage
               ? Text(
                   lastMessage ?? "",
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14),
                 )
               : const SizedBox.shrink(),

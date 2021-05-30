@@ -35,6 +35,12 @@ class LobbyLogic {
     });
   }
 
+  /// Return true if user have lobbies
+  Future<bool> userHaveLobbies() async {
+    List lobbies = await FirestoreWrapper.instance.getUserLobbies();
+    return lobbies.isNotEmpty;
+  }
+
   // MARK: Navigator Logic
 
   void goToLobbyCreationView() {
