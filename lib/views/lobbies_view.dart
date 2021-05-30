@@ -20,12 +20,7 @@ class _LobbiesViewState extends State<LobbiesView> {
   void initState() {
     super.initState();
     _controller = LobbyLogic(context);
-
-    Future.delayed(Duration.zero).then((value) async {
-      _controller
-          .userHaveLobbies()
-          .then((value) => setState(() => _haveLobbies = value));
-    });
+    userHaveLobbies();
   }
 
   @override
@@ -34,12 +29,19 @@ class _LobbiesViewState extends State<LobbiesView> {
     super.dispose();
   }
 
+  void userHaveLobbies() {
+    _controller
+        .userHaveLobbies()
+        .then((value) => setState(() => _haveLobbies = value));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
       body: BlocBuilder<LobbiesBloc, List<Lobby>>(
         builder: (context, lobbies) {
+          userHaveLobbies();
           return (_haveLobbies == null)
               ? shimmer()
               : !_haveLobbies
