@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:forat/bloc/events/messages_event.dart';
 import 'package:forat/bloc/messages_bloc.dart';
 import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
 import 'package:forat/models/message.dart';
-import 'package:forat/utility/date_time_firebase_helper.dart';
 
 class MessageLogic {
   BuildContext _context;
@@ -30,7 +28,7 @@ class MessageLogic {
       BlocProvider.of<MessagesBloc>(_context).add(
         MessagesEvent.add(
           Message(
-            dateTime: DateTimeFirebaseHelper.fromFirestore(y.get('dateTime')),
+            dateTime: DateTime.fromMillisecondsSinceEpoch(y.get('dateTime')),
             text: y.get('text'),
             username: y.get('creator'),
           ),

@@ -1,9 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
-import 'package:forat/models/lobby.dart';
-import 'package:forat/models/message.dart';
-import 'package:forat/models/topics.dart';
-import 'package:forat/utility/date_time_firebase_helper.dart';
 
 class FirestoreWrapper {
   // MARK: Singleton management
@@ -67,7 +63,7 @@ class FirestoreWrapper {
     DocumentReference ref = await lobbies.doc(uid).collection('messages').add({
       "text": text,
       "creator": username,
-      "dateTime": dateTime.toFirestore(),
+      "dateTime": dateTime.millisecondsSinceEpoch,
     });
     return ref.id;
   }
