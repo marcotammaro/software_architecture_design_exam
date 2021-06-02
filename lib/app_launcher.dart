@@ -32,6 +32,8 @@ class _AppLauncherState extends State<AppLauncher> {
     return Scaffold(
       body: _getCurrentBody(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         currentIndex: _currentIndex,
         items: _items,
         onTap: (index) => setState(() => _currentIndex = index),

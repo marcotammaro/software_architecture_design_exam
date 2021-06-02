@@ -39,24 +39,30 @@ class _LobbiesViewState extends State<LobbiesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: BlocBuilder<LobbiesBloc, List<Lobby>>(
-        builder: (context, lobbies) {
-          userHaveLobbies();
-          return (_haveLobbies == null)
-              ? shimmer()
-              : !_haveLobbies
-                  ? noLobby()
-                  : ListView.builder(
-                      itemCount: lobbies.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () =>
-                              _controller.goToLobbyDetailedView(lobbies[index]),
-                          child: lobbyCell(lobbies[index]),
-                        );
-                      },
-                    );
-        },
+      body: Container(
+        color: Colors.white,
+        child: BlocBuilder<LobbiesBloc, List<Lobby>>(
+          builder: (context, lobbies) {
+            userHaveLobbies();
+            return (_haveLobbies == null)
+                ? shimmer()
+                : !_haveLobbies
+                    ? noLobby()
+                    : ListView.builder(
+                        itemCount: lobbies.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () => _controller
+                                .goToLobbyDetailedView(lobbies[index]),
+                            child: Container(
+                              margin: EdgeInsets.only(top: index == 0 ? 20 : 0),
+                              child: lobbyCell(lobbies[index]),
+                            ),
+                          );
+                        },
+                      );
+          },
+        ),
       ),
     );
   }
@@ -88,6 +94,7 @@ class _LobbiesViewState extends State<LobbiesView> {
 
   Widget appBar() => AppBar(
         backgroundColor: Colors.white,
+        elevation: 0,
         actions: [
           IconButton(
             icon: Icon(

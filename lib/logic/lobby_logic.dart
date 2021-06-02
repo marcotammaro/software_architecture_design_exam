@@ -24,7 +24,7 @@ class LobbyLogic {
     startListenLobbies();
   }
 
-  // MARL: Utility Functions
+  // MARK: Utility Functions
 
   /// This function will start listening for lobbies snapshot on firebase
   void startListenLobbies() {
@@ -65,6 +65,12 @@ class LobbyLogic {
   Future<bool> userHaveLobbies() async {
     bool userHasLobbies = await FirestoreWrapper.instance.checkForUserLobbies();
     return userHasLobbies;
+  }
+
+  /// This function return true if the current user has logged in into the
+  /// passed lobby; false otherwise
+  static Future<bool> checkForUserJoined({Lobby lobby}) async {
+    return lobby.users.contains(AuthWrapper.instance.getCurrentUsername());
   }
 
   // MARK: Navigator Logic
@@ -144,11 +150,16 @@ class LobbyLogic {
     return true;
   }
 
-  static Future<bool> checkForUserJoined({Lobby lobby}) async {
-    return lobby.users.contains(AuthWrapper.instance.getCurrentUsername());
+  /// Function called when the user is in searchView and want to search for a
+  /// specific lobby. The function will search the lobby corresponding to
+  /// the passed name
+  static Future<List<Lobby>> didTapOnSearchButton({String nameKeyword}) async {
+    // TODO
   }
 
-  void didTapOnSearchButton() {
+  /// Function called when the user is in searchView and do not insert any
+  /// search criteria
+  static Future<List<Lobby>> getTrendLobbies({String nameKeyword}) async {
     // TODO
   }
 }
