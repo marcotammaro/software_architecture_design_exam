@@ -26,6 +26,7 @@ class FirestoreWrapper {
       "users": [username],
       "lastMessage": "",
       "lastMessageTimestamp": 0,
+      "usersCount": 1,
     });
     return ref.id;
   }
@@ -37,9 +38,12 @@ class FirestoreWrapper {
 
     if (foundedLobbies.docs.isEmpty) return;
 
+    int currentUsersCount = foundedLobbies.docs.first.get('usersCount');
+
     String uid = foundedLobbies.docs.first.id;
     await lobbies.doc(uid).update({
-      "users": FieldValue.arrayUnion([username])
+      "users": FieldValue.arrayUnion([username]),
+      "usersCount": currentUsersCount + 1,
     });
   }
 
@@ -85,18 +89,18 @@ class FirestoreWrapper {
   //     });
   //
   //     // Creating lobby
-  //     var lobby = Lobby.withKey(
-  //       key: doc.id,
-  //       name: doc.get('name'),
-  //       description: doc.get('description'),
-  //       topic: TopicsHelper.fromInt(doc.get('topic')),
-  //       users: List<String>.from(doc.get('users')),
-  //       lastMessage: Message(
-  //         text: doc.get('lastMessage'),
-  //         dateTime: DateTime.fromMillisecondsSinceEpoch(
-  //           doc.get('lastMessageTimestamp'),
-  //         ),
-  //       ),
+  // var lobby = Lobby.withKey(
+  //   key: doc.id,
+  //   name: doc.get('name'),
+  //   description: doc.get('description'),
+  //   topic: TopicsHelper.fromInt(doc.get('topic')),
+  //   users: List<String>.from(doc.get('users')),
+  //   lastMessage: Message(
+  //     text: doc.get('lastMessage'),
+  //     dateTime: DateTime.fromMillisecondsSinceEpoch(
+  //       doc.get('lastMessageTimestamp'),
+  //     ),
+  //   ),
   //     );
   //
   //     lobbyList.add(lobby);
@@ -104,6 +108,14 @@ class FirestoreWrapper {
   //
   //   return lobbyList;
   // }
+
+  Future<List<QueryDocumentSnapshot<Object>>> getTrendLobbies() async {
+    CollectionReference lobbies = firestore.collection('lobbies');
+
+    QuerySnapshot<Object> data =
+        await lobbies.orderBy('usersCount', descending: true).limit(1).get();
+    return data.docs;
+  }
 
   Future<Stream<QuerySnapshot>> getUserLobbiesStream() async {
     CollectionReference lobbies = firestore.collection('lobbies');

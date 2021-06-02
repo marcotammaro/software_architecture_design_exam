@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/models/lobby.dart';
 import 'package:forat/models/topics.dart';
 
@@ -12,7 +13,8 @@ class _SearchViewState extends State<SearchView> {
   TextEditingController _searchController;
   FocusNode _searchFocus;
   bool _isSearching;
-  List<Lobby> _results;
+  List<Lobby> _searchResults;
+  List<Lobby> _trendLobbies;
 
   @override
   void initState() {
@@ -22,7 +24,12 @@ class _SearchViewState extends State<SearchView> {
     _searchFocus = FocusNode();
     _searchFocus.addListener(_onSearchChange);
     _isSearching = false;
-    _results = [];
+    _searchResults = [];
+    _trendLobbies = [];
+
+    // Getting trend lobbies
+    LobbyLogic.getTrendLobbies()
+        .then((value) => setState(() => _trendLobbies = value));
   }
 
   @override
@@ -117,9 +124,16 @@ class _SearchViewState extends State<SearchView> {
   Widget resultsList() {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (context, index) =>
-            _results.isEmpty ? noResultCell() : resultCell(_results[index]),
-        childCount: _results.isEmpty ? 1 : _results.length,
+        (context, index) => _searchResults.isEmpty
+            ? _trendLobbies.isEmpty
+                ? noResultCell()
+                : resultCell(_trendLobbies[index])
+            : resultCell(_searchResults[index]),
+        childCount: _searchResults.isEmpty
+            ? _trendLobbies.isEmpty
+                ? 1
+                : _trendLobbies.length
+            : _searchResults.length,
       ),
     );
   }

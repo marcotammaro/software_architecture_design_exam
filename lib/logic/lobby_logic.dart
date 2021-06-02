@@ -159,7 +159,27 @@ class LobbyLogic {
 
   /// Function called when the user is in searchView and do not insert any
   /// search criteria
-  static Future<List<Lobby>> getTrendLobbies({String nameKeyword}) async {
-    // TODO
+  static Future<List<Lobby>> getTrendLobbies() async {
+    List<QueryDocumentSnapshot<Object>> docs =
+        await FirestoreWrapper.instance.getTrendLobbies();
+    List<Lobby> lobbies = [];
+    for (var doc in docs) {
+      lobbies.add(
+        Lobby.withKey(
+          key: doc.id,
+          name: doc.get('name'),
+          description: doc.get('description'),
+          topic: TopicsHelper.fromInt(doc.get('topic')),
+          users: List<String>.from(doc.get('users')),
+          lastMessage: Message(
+            text: doc.get('lastMessage'),
+            dateTime: DateTime.fromMillisecondsSinceEpoch(
+              doc.get('lastMessageTimestamp'),
+            ),
+          ),
+        ),
+      );
+    }
+    return lobbies;
   }
 }
