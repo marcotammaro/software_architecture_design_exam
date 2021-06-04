@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forat/logic/lobby_logic.dart';
-import 'package:forat/models/lobby.dart';
 import 'package:forat/models/topics.dart';
 
 class LobbyCreationView extends StatefulWidget {

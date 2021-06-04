@@ -24,15 +24,10 @@ class MessageLogic {
 
   void onMessageEvent(QuerySnapshot<Object> event) {
     BlocProvider.of<MessagesBloc>(_context).add(MessagesEvent.deleteAll());
-    for (var y in event.docs) {
+    for (var doc in event.docs) {
+      print(doc.data());
       BlocProvider.of<MessagesBloc>(_context).add(
-        MessagesEvent.add(
-          Message(
-            dateTime: DateTime.fromMillisecondsSinceEpoch(y.get('dateTime')),
-            text: y.get('text'),
-            username: y.get('creator'),
-          ),
-        ),
+        MessagesEvent.add(Message.fromMap(doc.data(), id: doc.id)),
       );
     } //bloc
   }
