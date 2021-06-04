@@ -15,6 +15,7 @@ enum Topics {
 
 extension TopicsHelper on Topics {
   int toInt() {
+    if (this == null) return null;
     return this.index;
   }
 
@@ -24,6 +25,7 @@ extension TopicsHelper on Topics {
   }
 
   Color color() {
+    if (this == null) return Colors.black;
     if (this.toInt() > 9 || this.toInt() < 0) return Colors.black;
 
     final List<Color> colors = [
@@ -43,6 +45,7 @@ extension TopicsHelper on Topics {
   }
 
   String name() {
+    if (this == null) return "";
     return this.toString().split('.').last;
   }
 }

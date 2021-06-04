@@ -10,13 +10,25 @@ class Lobby {
   Message lastMessage;
   String key;
 
-  Lobby({this.name, this.description, this.topic, this.users, this.lastMessage})
-      : this.key = generateRandomKey();
-  Lobby.withKey(
-      {this.name,
-      this.description,
-      this.topic,
-      this.users,
-      this.key,
-      this.lastMessage});
+  Lobby.fromMap(Map<String, dynamic> data, {String id}) {
+    this.key = id ?? generateRandomKey();
+    this.name = data["name"] ?? "";
+    this.description = data["description"] ?? "";
+    this.topic = TopicsHelper.fromInt(data["topic"]);
+    this.users = List<String>.from(data["users"]);
+    this.lastMessage = Message(
+      text: data["lastMessage"],
+      dateTime: DateTime.fromMillisecondsSinceEpoch(
+        data["lastMessageTimestamp"],
+      ),
+    );
+  }
+  Lobby.empty() {
+    this.key = generateRandomKey();
+    this.name = "";
+    this.description = "";
+    this.topic = null;
+    this.users = [];
+    this.lastMessage = null;
+  }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,8 +7,6 @@ import 'package:forat/bloc/lobbies_bloc.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
 import 'package:forat/models/lobby.dart';
-import 'package:forat/models/message.dart';
-import 'package:forat/models/topics.dart';
 import 'package:forat/utility/show_error_alert.dart';
 import 'package:forat/views/lobby_creation_view.dart';
 import 'package:forat/views/lobby_details_view.dart';
@@ -38,19 +35,7 @@ class LobbyLogic {
     // Removing all previous lobbies from the bloc
     BlocProvider.of<LobbiesBloc>(_context).add(LobbiesEvent.deleteAll());
     for (var doc in event.docs) {
-      var lobby = Lobby.withKey(
-        key: doc.id,
-        name: doc.get('name'),
-        description: doc.get('description'),
-        topic: TopicsHelper.fromInt(doc.get('topic')),
-        users: List<String>.from(doc.get('users')),
-        lastMessage: Message(
-          text: doc.get('lastMessage'),
-          dateTime: DateTime.fromMillisecondsSinceEpoch(
-            doc.get('lastMessageTimestamp'),
-          ),
-        ),
-      );
+      var lobby = Lobby.fromMap(doc.data(), id: doc.id);
       BlocProvider.of<LobbiesBloc>(_context).add(LobbiesEvent.add(lobby));
     }
   }
@@ -164,21 +149,7 @@ class LobbyLogic {
         await FirestoreWrapper.instance.getTrendLobbies();
     List<Lobby> lobbies = [];
     for (var doc in docs) {
-      lobbies.add(
-        Lobby.withKey(
-          key: doc.id,
-          name: doc.get('name'),
-          description: doc.get('description'),
-          topic: TopicsHelper.fromInt(doc.get('topic')),
-          users: List<String>.from(doc.get('users')),
-          lastMessage: Message(
-            text: doc.get('lastMessage'),
-            dateTime: DateTime.fromMillisecondsSinceEpoch(
-              doc.get('lastMessageTimestamp'),
-            ),
-          ),
-        ),
-      );
+      lobbies.add(Lobby.fromMap(doc.data(), id: doc.id));
     }
     return lobbies;
   }

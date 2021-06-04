@@ -86,7 +86,7 @@ class _LobbiesViewState extends State<LobbiesView> {
       child: ListView.builder(
         itemCount: 10,
         itemBuilder: (_, __) {
-          return lobbyCell(Lobby(name: "", description: "", topic: Topics.art));
+          return lobbyCell(Lobby.empty());
         },
       ),
     );
