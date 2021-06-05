@@ -13,6 +13,7 @@ class _SearchViewState extends State<SearchView> {
   TextEditingController _searchController;
   FocusNode _searchFocus;
   bool _isSearching;
+  bool _hasSearched;
   List<Lobby> _searchResults;
   List<Lobby> _trendLobbies;
 
@@ -24,6 +25,7 @@ class _SearchViewState extends State<SearchView> {
     _searchFocus = FocusNode();
     _searchFocus.addListener(_onSearchChange);
     _isSearching = false;
+    _hasSearched = false;
     _searchResults = [];
     _trendLobbies = [];
 
@@ -124,16 +126,19 @@ class _SearchViewState extends State<SearchView> {
   Widget resultsList() {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (context, index) => _searchResults.isEmpty
-            ? _trendLobbies.isEmpty
-                ? noResultCell()
-                : resultCell(_trendLobbies[index])
-            : resultCell(_searchResults[index]),
-        childCount: _searchResults.isEmpty
-            ? _trendLobbies.isEmpty
+        (context, index) {
+          if (!_hasSearched) return resultCell(_trendLobbies[index]);
+          if (_hasSearched && _searchResults.isEmpty) return noResultCell();
+          if (_hasSearched) return resultCell(_searchResults[index]);
+          return Container();
+        },
+        childCount: !_hasSearched
+            ? _trendLobbies.length
+            : (_hasSearched && _searchResults.isEmpty)
                 ? 1
-                : _trendLobbies.length
-            : _searchResults.length,
+                : (_hasSearched && _searchResults.isNotEmpty)
+                    ? _searchResults.length
+                    : 0,
       ),
     );
   }
@@ -207,7 +212,10 @@ class _SearchViewState extends State<SearchView> {
   void onSearch() async {
     List<Lobby> result = await LobbyLogic.didTapOnSearchButton(context,
         nameKeyword: _searchController.text);
-    setState(() => _searchResults = result ?? []);
+    setState(() {
+      _hasSearched = true;
+      _searchResults = result ?? [];
+    });
   }
 
   void onResultTap(Lobby lobby) {
@@ -223,6 +231,7 @@ class _SearchViewState extends State<SearchView> {
     setState(() {
       _isSearching = _searchFocus.hasFocus &&
           (_searchController.text != "" && _searchController.text != null);
+      if (_searchController.text == "") _hasSearched = false;
     });
   }
 }
