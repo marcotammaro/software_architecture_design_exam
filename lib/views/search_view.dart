@@ -156,7 +156,7 @@ class _SearchViewState extends State<SearchView> {
 
   Widget resultCell(Lobby lobby) {
     return GestureDetector(
-      onTap: onResultTap,
+      onTap: () => onResultTap(lobby),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         margin: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
@@ -204,9 +204,18 @@ class _SearchViewState extends State<SearchView> {
 
   // MARK: User actions
 
-  void onSearch() {}
+  void onSearch() async {
+    List<Lobby> result = await LobbyLogic.didTapOnSearchButton(context,
+        nameKeyword: _searchController.text);
+    setState(() => _searchResults = result ?? []);
+  }
 
-  void onResultTap() {}
+  void onResultTap(Lobby lobby) {
+    LobbyLogic.goToLobbyDetailedView(
+      context,
+      lobby,
+    );
+  }
 
   // MARK: Utility functions
 

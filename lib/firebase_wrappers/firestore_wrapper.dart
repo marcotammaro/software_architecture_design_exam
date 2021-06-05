@@ -11,28 +11,20 @@ class FirestoreWrapper {
   }
 
   // MARK: Attributes
+
   CollectionReference _usersCollection;
   CollectionReference _lobbiesCollection;
 
   // MARK: Add Functions
+
+  /// Create a new document in the users collection with the passed
+  /// username as key
   Future addUser({String username}) async {
     await _usersCollection.doc(username).set({"username": username});
   }
 
-  Future<String> addLobby({String name, String description, int topic}) async {
-    String username = AuthWrapper.instance.getCurrentUsername();
-    DocumentReference ref = await _lobbiesCollection.add({
-      "description": description,
-      "name": name,
-      "topic": topic,
-      "users": [username],
-      "lastMessage": "",
-      "lastMessageTimestamp": 0,
-      "usersCount": 1,
-    });
-    return ref.id;
-  }
-
+  /// Add the passed username to the lobby that as the name as the
+  /// passed lobbyName and increment the users counter
   Future addUserToLobby({String lobbyName, String username}) async {
     var foundedLobbies =
         await _lobbiesCollection.where('name', isEqualTo: lobbyName).get();
@@ -48,6 +40,23 @@ class FirestoreWrapper {
     });
   }
 
+  /// Create a new document in the lobbies collection with the passed values
+  Future<String> addLobby({String name, String description, int topic}) async {
+    String username = AuthWrapper.instance.getCurrentUsername();
+    DocumentReference ref = await _lobbiesCollection.add({
+      "description": description,
+      "name": name,
+      "topic": topic,
+      "users": [username],
+      "lastMessage": "",
+      "lastMessageTimestamp": 0,
+      "usersCount": 1,
+    });
+    return ref.id;
+  }
+
+  /// Create a new document in the messages collection in a lobby that as the
+  /// name as the passed lobbyName with the passed values
   Future<String> addMessage(
       {String text, DateTime dateTime, String lobbyName}) async {
     String username = AuthWrapper.instance.getCurrentUsername();
@@ -75,49 +84,42 @@ class FirestoreWrapper {
 
   // MARK: Get functions
 
-  // Future<List<Lobby>> getUserLobbies() async {
-  //   CollectionReference lobbies = firestore.collection('lobbies');
-  //   String username = AuthWrapper.instance.getCurrentUsername();
-  //   QuerySnapshot<Object> data =
-  //       await lobbies.where('users', arrayContains: username).get();
-  //
-  //   List<Lobby> lobbyList = [];
-  //   for (var doc in data.docs) {
-  //     // Getting last message from this lobby
-  //     var messageList = await getMessages(doc.get('name'));
-  //     messageList.sort((a, b) {
-  //       return a.dateTime.compareTo(b.dateTime);
-  //     });
-  //
-  //     // Creating lobby
-  // var lobby = Lobby.withKey(
-  //   key: doc.id,
-  //   name: doc.get('name'),
-  //   description: doc.get('description'),
-  //   topic: TopicsHelper.fromInt(doc.get('topic')),
-  //   users: List<String>.from(doc.get('users')),
-  //   lastMessage: Message(
-  //     text: doc.get('lastMessage'),
-  //     dateTime: DateTime.fromMillisecondsSinceEpoch(
-  //       doc.get('lastMessageTimestamp'),
-  //     ),
-  //   ),
-  //     );
-  //
-  //     lobbyList.add(lobby);
-  //   }
-  //
-  //   return lobbyList;
-  // }
-
+  /// Return a list of the first 5th lobbies for more users
   Future<List<QueryDocumentSnapshot<Object>>> getTrendLobbies() async {
     QuerySnapshot<Object> data = await _lobbiesCollection
         .orderBy('usersCount', descending: true)
-        .limit(1)
+        .limit(5)
         .get();
     return data.docs;
   }
 
+  /// Return a list of 10 lobbies documents (if founded) where the name contains
+  /// parts of the passed text
+  Future<List<QueryDocumentSnapshot<Object>>> getTrendLobbiesWithNameContaining(
+    String text,
+  ) async {
+    QuerySnapshot<Object> data =
+        await _lobbiesCollection.where('name', isEqualTo: text).limit(10).get();
+
+    return data.docs;
+  }
+
+  /// Return a list of 10 lobbies documents (if founded) where the topic is exactly
+  /// corresponding to the passed topicIndex
+  Future<List<QueryDocumentSnapshot<Object>>> getTrendLobbiesWithTopic(
+    int topicIndex,
+  ) async {
+    QuerySnapshot<Object> data = await _lobbiesCollection
+        .where('topic', isEqualTo: topicIndex)
+        .limit(10)
+        .get();
+    return data.docs;
+  }
+
+  // MARK: Get stream functions
+
+  /// Get a stream connected to the lobies documents, if any lobby got
+  /// update, the stream will update itself
   Future<Stream<QuerySnapshot>> getUserLobbiesStream() async {
     String username = AuthWrapper.instance.getCurrentUsername();
     return _lobbiesCollection
@@ -125,28 +127,8 @@ class FirestoreWrapper {
         .snapshots();
   }
 
-  // Future<List<Message>> getMessages(String lobbyName) async {
-  //   CollectionReference lobbies = firestore.collection('lobbies');
-  //   QuerySnapshot<Object> lobby =
-  //       await lobbies.where('name', isEqualTo: lobbyName).get();
-  //   String uid = lobby.docs.first.id;
-  //
-  //   QuerySnapshot<Object> messages =
-  //       await lobbies.doc(uid).collection('messages').get();
-  //
-  //   List<Message> messageList = [];
-  //   for (var msgDoc in messages.docs) {
-  //     messageList.add(Message.withKey(
-  //       dateTime: DateTimeFirebaseHelper.fromFirestore(msgDoc.get('dateTime')),
-  //       text: msgDoc.get('text'),
-  //       username: msgDoc.get('creator'),
-  //       key: msgDoc.id,
-  //     ));
-  //   }
-  //
-  //   return messageList;
-  // }
-
+  /// Get a stream connected to the messages documents, if any message got
+  /// update, the stream will update itself
   Future<Stream<QuerySnapshot>> getMessagesStream(String lobbyName) async {
     QuerySnapshot<Object> lobby =
         await _lobbiesCollection.where('name', isEqualTo: lobbyName).get();

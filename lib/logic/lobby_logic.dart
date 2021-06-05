@@ -7,17 +7,18 @@ import 'package:forat/bloc/lobbies_bloc.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
 import 'package:forat/models/lobby.dart';
+import 'package:forat/models/topics.dart';
 import 'package:forat/utility/show_error_alert.dart';
 import 'package:forat/views/lobby_creation_view.dart';
 import 'package:forat/views/lobby_details_view.dart';
 
 class LobbyLogic {
   // Class Attributes
-  BuildContext _context;
+  BuildContext _streamContext;
   StreamSubscription<QuerySnapshot> _stream;
 
   // Constructor
-  LobbyLogic(this._context) {
+  LobbyLogic(this._streamContext) {
     startListenLobbies();
   }
 
@@ -33,10 +34,10 @@ class LobbyLogic {
   /// Callback called when the lobbies snapshot updates
   void onLobbiesEvent(QuerySnapshot<Object> event) async {
     // Removing all previous lobbies from the bloc
-    BlocProvider.of<LobbiesBloc>(_context).add(LobbiesEvent.deleteAll());
+    BlocProvider.of<LobbiesBloc>(_streamContext).add(LobbiesEvent.deleteAll());
     for (var doc in event.docs) {
       var lobby = Lobby.fromMap(doc.data(), id: doc.id);
-      BlocProvider.of<LobbiesBloc>(_context).add(LobbiesEvent.add(lobby));
+      BlocProvider.of<LobbiesBloc>(_streamContext).add(LobbiesEvent.add(lobby));
     }
   }
 
@@ -62,14 +63,14 @@ class LobbyLogic {
 
   void goToLobbyCreationView() async {
     Navigator.push(
-      _context,
+      _streamContext,
       MaterialPageRoute(builder: (_context) => LobbyCreationView()),
     );
   }
 
-  void goToLobbyDetailedView(Lobby lobby) {
+  static void goToLobbyDetailedView(BuildContext context, Lobby lobby) {
     Navigator.push(
-      _context,
+      context,
       MaterialPageRoute(builder: (_context) => LobbyDetailsView(lobby: lobby)),
     );
   }
@@ -138,8 +139,26 @@ class LobbyLogic {
   /// Function called when the user is in searchView and want to search for a
   /// specific lobby. The function will search the lobby corresponding to
   /// the passed name
-  static Future<List<Lobby>> didTapOnSearchButton({String nameKeyword}) async {
-    // TODO
+  static Future<List<Lobby>> didTapOnSearchButton(BuildContext context,
+      {String nameKeyword}) async {
+    if (nameKeyword.startsWith('@')) {
+      String topicName = nameKeyword.replaceFirst("@", "");
+      Topics topic = TopicsHelper.fromString(topicName);
+      if (topic == null)
+        showErrorAlert(context,
+            message: "No topics found with the inserted name", onCancel: () {
+          return;
+        });
+
+      List<QueryDocumentSnapshot<Object>> docs = await FirestoreWrapper.instance
+          .getTrendLobbiesWithTopic(topic.toInt());
+      return docs.map((doc) => Lobby.fromMap(doc.data(), id: doc.id)).toList();
+    } else {
+      List<QueryDocumentSnapshot<Object>> docs = await FirestoreWrapper.instance
+          .getTrendLobbiesWithNameContaining(nameKeyword);
+
+      return docs.map((doc) => Lobby.fromMap(doc.data(), id: doc.id)).toList();
+    }
   }
 
   /// Function called when the user is in searchView and do not insert any

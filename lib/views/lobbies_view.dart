@@ -52,8 +52,10 @@ class _LobbiesViewState extends State<LobbiesView> {
                         itemCount: lobbies.length,
                         itemBuilder: (context, index) {
                           return GestureDetector(
-                            onTap: () => _controller
-                                .goToLobbyDetailedView(lobbies[index]),
+                            onTap: () => LobbyLogic.goToLobbyDetailedView(
+                              context,
+                              lobbies[index],
+                            ),
                             child: Container(
                               margin: EdgeInsets.only(top: index == 0 ? 20 : 0),
                               child: lobbyCell(lobbies[index]),

@@ -48,4 +48,11 @@ extension TopicsHelper on Topics {
     if (this == null) return "";
     return this.toString().split('.').last;
   }
+
+  static Topics fromString(String value) {
+    for (var topic in Topics.values) {
+      if (topic.name() == value) return topic;
+    }
+    return null;
+  }
 }
