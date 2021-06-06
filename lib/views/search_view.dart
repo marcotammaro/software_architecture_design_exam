@@ -210,12 +210,16 @@ class _SearchViewState extends State<SearchView> {
   // MARK: User actions
 
   void onSearch() async {
-    List<Lobby> result = await LobbyLogic.didTapOnSearchButton(context,
-        nameKeyword: _searchController.text);
-    setState(() {
-      _hasSearched = true;
-      _searchResults = result ?? [];
-    });
+    List<Lobby> result = await LobbyLogic.didTapOnSearchButton(
+      context,
+      nameKeyword: _searchController.text,
+    );
+    print(result);
+    if (result != null)
+      setState(() {
+        _hasSearched = true;
+        _searchResults = result ?? [];
+      });
   }
 
   void onResultTap(Lobby lobby) {

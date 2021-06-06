@@ -144,11 +144,13 @@ class LobbyLogic {
     if (nameKeyword.startsWith('@')) {
       String topicName = nameKeyword.replaceFirst("@", "");
       Topics topic = TopicsHelper.fromString(topicName);
-      if (topic == null)
-        showErrorAlert(context,
-            message: "No topics found with the inserted name", onCancel: () {
-          return;
-        });
+      if (topic == null) {
+        showErrorAlert(
+          context,
+          message: "No topics found with the inserted name",
+        );
+        return null;
+      }
 
       List<QueryDocumentSnapshot<Object>> docs = await FirestoreWrapper.instance
           .getTrendLobbiesWithTopic(topic.toInt());
