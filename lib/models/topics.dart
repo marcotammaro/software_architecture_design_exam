@@ -26,7 +26,9 @@ extension TopicsHelper on Topics {
 
   Color color() {
     if (this == null) return Colors.black;
-    if (this.toInt() > 9 || this.toInt() < 0) return Colors.black;
+    if (this.toInt() >= Topics.values.length ||
+        this.toInt() < 0 ||
+        this.toInt() == null) return Colors.black.withAlpha(100);
 
     final List<Color> colors = [
       Colors.red[700],
@@ -50,9 +52,7 @@ extension TopicsHelper on Topics {
   }
 
   static Topics fromString(String value) {
-    for (var topic in Topics.values) {
-      if (topic.name() == value) return topic;
-    }
+    for (var topic in Topics.values) if (topic.name() == value) return topic;
     return null;
   }
 }
