@@ -56,7 +56,11 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.red),
+      backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).backgroundColor,
+        elevation: 1,
+      ),
       body: BlocBuilder<MessagesBloc, List<Message>>(
         builder: (context, messages) {
           return SafeArea(
@@ -100,7 +104,17 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
             Container(
               height: _bottomBarHeight,
               width: MediaQuery.of(context).size.width * 0.75,
-              color: Colors.white,
+              decoration: BoxDecoration(
+                color: Theme.of(context).backgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color:
+                        Theme.of(context).unselectedWidgetColor.withAlpha(100),
+                    blurRadius: 10,
+                  )
+                ],
+              ),
               child: TextField(
                 controller: _textFieldController,
                 enabled: true,

@@ -30,6 +30,7 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: appBar(),
       body: SingleChildScrollView(
         child: Column(
@@ -51,19 +52,21 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
         iconTheme: IconThemeData(
           color: Colors.black,
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).backgroundColor,
+        elevation: 0,
         actions: [
           TextButton(
             child: Text(
               "Save",
-              style: TextStyle(color: Colors.black, fontSize: 16),
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor, fontSize: 16),
             ),
             onPressed: onSave,
           ),
         ],
         title: Text(
           'Lobby Creation',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
         ),
       );
 
@@ -110,7 +113,9 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
           borderRadius: BorderRadius.circular(10),
           color: Colors.white,
           boxShadow: [
-            BoxShadow(color: Colors.grey.withAlpha(100), blurRadius: 10)
+            BoxShadow(
+                color: Theme.of(context).unselectedWidgetColor.withAlpha(100),
+                blurRadius: 10)
           ],
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -144,6 +149,7 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
         label: Text(
           title,
           style: TextStyle(
+            color: Theme.of(context).textTheme.bodyText1.color,
             fontWeight:
                 _selectedChip == index ? FontWeight.w700 : FontWeight.w500,
           ),

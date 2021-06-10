@@ -58,7 +58,8 @@ class _SearchViewState extends State<SearchView> {
                 elevation: 0,
                 title: Text(
                   "Search",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyText1.color),
                 ),
                 flexibleSpace: Align(
                   alignment: Alignment.bottomCenter,
@@ -87,9 +88,13 @@ class _SearchViewState extends State<SearchView> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
+                color: Theme.of(context).backgroundColor,
                 boxShadow: [
-                  BoxShadow(color: Colors.grey.withAlpha(100), blurRadius: 10)
+                  BoxShadow(
+                      color: Theme.of(context)
+                          .unselectedWidgetColor
+                          .withAlpha(100),
+                      blurRadius: 10)
                 ],
               ),
               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -107,8 +112,8 @@ class _SearchViewState extends State<SearchView> {
           _isSearching
               ? MaterialButton(
                   onPressed: onSearch,
-                  color: Colors.blue,
-                  textColor: Colors.white,
+                  color: Theme.of(context).primaryColor,
+                  textColor: Theme.of(context).backgroundColor,
                   child: Icon(
                     FontAwesomeIcons.search,
                     size: 16,
@@ -184,6 +189,7 @@ class _SearchViewState extends State<SearchView> {
                     label: Text(
                       lobby.topic.name(),
                       style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyText1.color,
                         fontSize: 14,
                       ),
                     ),

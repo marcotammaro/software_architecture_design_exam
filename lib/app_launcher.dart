@@ -32,7 +32,7 @@ class _AppLauncherState extends State<AppLauncher> {
     return Scaffold(
       body: _getCurrentBody(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).backgroundColor,
         elevation: 0,
         currentIndex: _currentIndex,
         items: _items,

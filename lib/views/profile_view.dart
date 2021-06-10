@@ -9,7 +9,7 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.green,
+      color: Theme.of(context).backgroundColor,
     );
   }
 }

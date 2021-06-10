@@ -40,7 +40,7 @@ class _LobbiesViewState extends State<LobbiesView> {
     return Scaffold(
       appBar: appBar(),
       body: Container(
-        color: Colors.white,
+        color: Theme.of(context).backgroundColor,
         child: BlocBuilder<LobbiesBloc, List<Lobby>>(
           builder: (context, lobbies) {
             userHaveLobbies();
@@ -95,20 +95,18 @@ class _LobbiesViewState extends State<LobbiesView> {
   }
 
   Widget appBar() => AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).backgroundColor,
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(
-              FontAwesomeIcons.plus,
-              color: Colors.black,
-            ),
+            icon: Icon(FontAwesomeIcons.plus,
+                color: Theme.of(context).primaryColor),
             onPressed: () => _controller.goToLobbyCreationView(),
           ),
         ],
         title: Text(
           'Lobbies',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
         ),
       );
 
@@ -120,7 +118,9 @@ class _LobbiesViewState extends State<LobbiesView> {
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.grey.withAlpha(100), blurRadius: 10)
+          BoxShadow(
+              color: Theme.of(context).unselectedWidgetColor.withAlpha(100),
+              blurRadius: 10)
         ],
       ),
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -150,6 +150,7 @@ class _LobbiesViewState extends State<LobbiesView> {
               label: Text(
                 lobby.topic.name(),
                 style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText1.color,
                   fontSize: 14,
                 ),
               ),
