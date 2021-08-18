@@ -172,6 +172,7 @@ class _SearchViewState extends State<SearchView> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         margin: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+        color: Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
