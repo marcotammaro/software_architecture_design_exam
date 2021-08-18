@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/models/lobby.dart';
+import 'package:forat/models/message.dart';
 import 'package:forat/models/topics.dart';
+import 'package:forat/utility/show_error_alert.dart';
 
 class SearchView extends StatefulWidget {
   @override
@@ -228,11 +230,15 @@ class _SearchViewState extends State<SearchView> {
       });
   }
 
-  void onResultTap(Lobby lobby) {
-    LobbyLogic.goToLobbyDetailedView(
-      context,
-      lobby,
-    );
+  void onResultTap(Lobby tappedLobby) async {
+    Lobby lobby = await LobbyLogic.getLobbyWithId(tappedLobby.key);
+    if (lobby != null)
+      LobbyLogic.goToLobbyDetailedView(
+        context,
+        lobby,
+      );
+    else
+      showErrorAlert(context, message: "Unable to find the lobby");
   }
 
   // MARK: Utility functions
