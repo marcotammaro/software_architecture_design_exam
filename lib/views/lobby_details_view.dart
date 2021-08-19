@@ -109,7 +109,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
           children: [
             Container(
               height: _bottomBarHeight,
-              width: MediaQuery.of(context).size.width * 0.75,
+              width: MediaQuery.of(context).size.width * 0.65,
               decoration: BoxDecoration(
                 color: Theme.of(context).backgroundColor,
                 borderRadius: BorderRadius.circular(10),
