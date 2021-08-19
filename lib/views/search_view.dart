@@ -32,8 +32,10 @@ class _SearchViewState extends State<SearchView> {
     _trendLobbies = [];
 
     // Getting trend lobbies
-    LobbyLogic.getTrendLobbies()
-        .then((value) => setState(() => _trendLobbies = value));
+    LobbyLogic.getTrendLobbies().then((value) {
+      value.sort((a, b) => b.users.length.compareTo(a.users.length));
+      setState(() => _trendLobbies = value);
+    });
   }
 
   @override
@@ -134,9 +136,9 @@ class _SearchViewState extends State<SearchView> {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          if (!_hasSearched) return resultCell(_trendLobbies[index]);
+          if (!_hasSearched) return resultCell(_trendLobbies[index], index);
           if (_hasSearched && _searchResults.isEmpty) return noResultCell();
-          if (_hasSearched) return resultCell(_searchResults[index]);
+          if (_hasSearched) return resultCell(_searchResults[index], index);
           return Container();
         },
         childCount: !_hasSearched
@@ -166,7 +168,7 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
-  Widget resultCell(Lobby lobby) {
+  Widget resultCell(Lobby lobby, int index) {
     return GestureDetector(
       onTap: () => onResultTap(lobby),
       child: Container(
@@ -174,40 +176,77 @@ class _SearchViewState extends State<SearchView> {
         margin: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
         color: Colors.white,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              lobby.name ?? "",
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Row(
-                children: [
-                  Chip(
-                    elevation: 0,
-                    backgroundColor: lobby.topic.color(),
-                    label: Text(
-                      lobby.topic.name(),
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.bodyText1.color,
-                        fontSize: 14,
+            Row(
+              children: [
+                !_hasSearched
+                    ? Expanded(
+                        child: Center(
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: index == 0
+                                ? Color(0xFFFFD700)
+                                : index == 1
+                                    ? Color(0xFFC0C0C0)
+                                    : index == 2
+                                        ? Color(0xFFD39C6E)
+                                        : Colors.grey[100],
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Center(child: Text("${index + 1}")),
+                        ),
+                      ))
+                    : SizedBox.shrink(),
+                SizedBox(width: 10),
+                Expanded(
+                  flex: 5,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        lobby.name ?? "",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                    ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Row(
+                          children: [
+                            Chip(
+                              elevation: 0,
+                              backgroundColor: lobby.topic.color(),
+                              label: Text(
+                                lobby.topic.name(),
+                                style: TextStyle(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .color,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                "${lobby.users.length} People",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      "${lobby.users.length} People",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.normal),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
             Divider()
           ],
