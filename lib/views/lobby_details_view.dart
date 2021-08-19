@@ -141,7 +141,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
               color: widget.lobby.topic.color(),
               textColor: Theme.of(context).backgroundColor,
               child: Icon(
-                FontAwesomeIcons.arrowCircleRight,
+                FontAwesomeIcons.arrowRight,
                 size: 22,
               ),
               minWidth: 0,
