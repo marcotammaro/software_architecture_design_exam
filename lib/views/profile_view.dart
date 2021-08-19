@@ -12,14 +12,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        elevation: 0,
-        title: Text(
-          "Profile",
-          style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-        ),
-        backgroundColor: Colors.white,
-      ),
+      appBar: appBar(),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
@@ -32,6 +25,19 @@ class _ProfileViewState extends State<ProfileView> {
           ),
         ),
       ),
+    );
+  }
+
+  // MARK: Widgets
+
+  Widget appBar() {
+    return AppBar(
+      elevation: 0,
+      title: Text(
+        "Profile",
+        style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+      ),
+      backgroundColor: Colors.white,
     );
   }
 
