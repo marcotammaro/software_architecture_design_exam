@@ -99,7 +99,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   Widget logoutButton() {
     return MaterialButton(
-      onPressed: () => AuthWrapper.instance.logoutUser(),
+      onPressed: onLogout,
       color: Theme.of(context).primaryColor,
       textColor: Theme.of(context).backgroundColor,
       child: Text("Log Out"),
@@ -107,5 +107,12 @@ class _ProfileViewState extends State<ProfileView> {
       minWidth: 200,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
     );
+  }
+
+  // MARK: User Actions
+
+  void onLogout() {
+    AuthWrapper.instance.logoutUser();
+    //TODO go to login screen
   }
 }
