@@ -174,4 +174,15 @@ class LobbyLogic {
     }
     return lobbies;
   }
+
+  /// Function called when the user press on a lobby in the search view
+  /// to return the most updated lobby data
+  static Future<Lobby> getLobbyWithId(String id) async {
+    DocumentSnapshot<Object> doc =
+        await FirestoreWrapper.instance.getLobbiesWithId(id);
+    if (doc.exists) {
+      return Lobby.fromMap(doc.data(), id: doc.id);
+    } else
+      return null;
+  }
 }

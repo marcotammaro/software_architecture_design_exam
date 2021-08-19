@@ -116,6 +116,15 @@ class FirestoreWrapper {
     return data.docs;
   }
 
+  /// Return a the document of the lobbies with the provided id
+  /// if no document is founded return null
+  Future<DocumentSnapshot<Object>> getLobbiesWithId(
+    String id,
+  ) async {
+    DocumentSnapshot<Object> doc = await _lobbiesCollection.doc(id).get();
+    return doc;
+  }
+
   // MARK: Get stream functions
 
   /// Get a stream connected to the lobies documents, if any lobby got

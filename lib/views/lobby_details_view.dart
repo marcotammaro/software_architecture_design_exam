@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forat/bloc/messages_bloc.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/logic/message_logic.dart';
 import 'package:forat/models/lobby.dart';
 import 'package:forat/models/message.dart';
+import 'package:forat/models/topics.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 class LobbyDetailsView extends StatefulWidget {
@@ -20,22 +22,23 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
   MessageLogic _messagesController;
   bool _isButtonEnabled = true;
   int _keyboardListnerID;
-  double _bottomBarHeight = 50;
+  double _bottomBarHeight = 60;
   final _scrollController = ScrollController();
   final _keyboardVisibility = KeyboardVisibilityNotification();
   final _textFieldController = TextEditingController();
-  final ButtonStyle style = ElevatedButton.styleFrom(
-    textStyle: const TextStyle(fontSize: 20),
-    primary: Colors.red,
-  );
-
+  ButtonStyle style;
   @override
   void initState() {
     super.initState();
+    style = ElevatedButton.styleFrom(
+      textStyle: const TextStyle(fontSize: 20),
+      primary: widget.lobby.topic.color(),
+    );
 
     _messagesController = MessageLogic(context, widget.lobby.name);
-    LobbyLogic.checkForUserJoined(lobby: widget.lobby)
-        .then((value) => setState(() => _isButtonEnabled = !value));
+    LobbyLogic.checkForUserJoined(lobby: widget.lobby).then((value) {
+      setState(() => _isButtonEnabled = !value);
+    });
 
     _keyboardListnerID = _keyboardVisibility.addNewListener(
       onChange: (bool visible) {
@@ -58,6 +61,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
+        title: Text(widget.lobby.name),
         backgroundColor: Theme.of(context).backgroundColor,
         elevation: 1,
       ),
@@ -80,7 +84,9 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
     return Visibility(
       visible: (_isButtonEnabled) ? true : false,
       child: Container(
+        padding: EdgeInsets.only(bottom: 10),
         height: _bottomBarHeight,
+        width: MediaQuery.of(context).size.width * 0.8,
         child: ElevatedButton(
           style: style,
           onPressed: () {
@@ -89,21 +95,22 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
                     username: AuthWrapper.instance.getCurrentUsername())
                 .then(
               (value) => setState(() => _isButtonEnabled = !value),
-            ); //TODO
+            );
           },
-          child: const Text('Enabled'),
+          child: const Text('Join Chat!'),
         ),
       ),
       replacement: Container(
         height: _bottomBarHeight,
         width: double.infinity,
         color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
               height: _bottomBarHeight,
-              width: MediaQuery.of(context).size.width * 0.75,
+              width: MediaQuery.of(context).size.width * 0.8,
               decoration: BoxDecoration(
                 color: Theme.of(context).backgroundColor,
                 borderRadius: BorderRadius.circular(10),
@@ -115,6 +122,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
                   )
                 ],
               ),
+              padding: EdgeInsets.only(left: 15),
               child: TextField(
                 controller: _textFieldController,
                 enabled: true,
@@ -124,14 +132,20 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
                 ),
               ),
             ),
-            ElevatedButton(
-              style: style,
+            MaterialButton(
               onPressed: () {
                 _messagesController
                     .didTapOnSendButton(_textFieldController.text);
                 _textFieldController.clear();
               },
-              child: const Text('Invia'),
+              color: widget.lobby.topic.color(),
+              textColor: Theme.of(context).backgroundColor,
+              child: Icon(
+                FontAwesomeIcons.arrowRight,
+                size: 22,
+              ),
+              minWidth: 0,
+              shape: CircleBorder(),
             ),
           ],
         ),
@@ -163,19 +177,24 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
                 color: (messages[index].username !=
                         AuthWrapper.instance.getCurrentUsername()
                     ? Colors.grey.shade200
-                    : Colors.blue[200]),
+                    : widget.lobby.topic.color()),
               ),
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(messages[index].username,
-                      style: TextStyle(fontSize: 10),
+                      style: TextStyle(fontSize: 12),
                       textAlign: TextAlign.left),
+                  SizedBox(height: 5),
+                  Text(messages[index].text,
+                      style: TextStyle(fontSize: 15),
+                      textAlign: TextAlign.left),
+                  SizedBox(height: 5),
                   Text(
-                    messages[index].text,
-                    style: TextStyle(fontSize: 15),
-                  ),
+                      "${messages[index].dateTime.hour}:${messages[index].dateTime.minute}",
+                      style: TextStyle(fontSize: 10),
+                      textAlign: TextAlign.right),
                 ],
               ),
             ),

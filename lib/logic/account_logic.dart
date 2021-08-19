@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
 import 'package:forat/views/lobbies_view.dart';
+import 'package:forat/views/login_view.dart';
 import 'package:forat/views/registraton_view.dart';
 
 class AccountLogic {
@@ -25,6 +26,13 @@ class AccountLogic {
     Navigator.push(
       _context,
       MaterialPageRoute(builder: (_context) => RegistrationView()),
+    );
+  }
+
+  void goToLoginView() {
+    Navigator.pushReplacement(
+      _context,
+      MaterialPageRoute(builder: (_context) => LoginView()),
     );
   }
 

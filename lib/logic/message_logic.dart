@@ -48,7 +48,8 @@ class MessageLogic {
   // MARK: Navigator Logic
 
   void didTapOnSendButton(String text) {
-    if (FirebaseAuth.instance.currentUser == null) return;
+    if (FirebaseAuth.instance.currentUser == null || text == "") return;
+
     var dateTime = DateTime.now();
     FirestoreWrapper.instance.addMessage(
       dateTime: dateTime,
