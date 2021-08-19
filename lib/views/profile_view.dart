@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
+import 'package:forat/logic/account_logic.dart';
 
 class ProfileView extends StatefulWidget {
   @override
@@ -113,6 +114,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   void onLogout() {
     AuthWrapper.instance.logoutUser();
-    //TODO go to login screen
+    AccountLogic(context).goToLoginView();
+    //TODO to test
   }
 }
