@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forat/bloc/messages_bloc.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/logic/lobby_logic.dart';
@@ -109,7 +110,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
           children: [
             Container(
               height: _bottomBarHeight,
-              width: MediaQuery.of(context).size.width * 0.65,
+              width: MediaQuery.of(context).size.width * 0.8,
               decoration: BoxDecoration(
                 color: Theme.of(context).backgroundColor,
                 borderRadius: BorderRadius.circular(10),
@@ -131,14 +132,20 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
                 ),
               ),
             ),
-            ElevatedButton(
-              style: style,
+            MaterialButton(
               onPressed: () {
                 _messagesController
                     .didTapOnSendButton(_textFieldController.text);
                 _textFieldController.clear();
               },
-              child: const Text('Send'),
+              color: widget.lobby.topic.color(),
+              textColor: Theme.of(context).backgroundColor,
+              child: Icon(
+                FontAwesomeIcons.arrowCircleRight,
+                size: 22,
+              ),
+              minWidth: 0,
+              shape: CircleBorder(),
             ),
           ],
         ),
