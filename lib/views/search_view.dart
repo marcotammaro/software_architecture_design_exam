@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/models/lobby.dart';
-import 'package:forat/models/message.dart';
 import 'package:forat/models/topics.dart';
 import 'package:forat/utility/show_error_alert.dart';
 

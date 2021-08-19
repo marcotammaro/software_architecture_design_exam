@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forat/logic/account_logic.dart';
 
 class RegistrationView extends StatefulWidget {
   @override
@@ -6,9 +7,19 @@ class RegistrationView extends StatefulWidget {
 }
 
 class _RegistrationViewState extends State<RegistrationView> {
-  final dateController = TextEditingController();
-
+  final _dateController = TextEditingController();
+  AccountLogic _accountLogic;
+  final _textFieldControllerEmail = TextEditingController();
+  final _textFieldControllerUsername = TextEditingController();
+  final _textFieldControllerPassword = TextEditingController();
+  final _textFieldControllerConfirmPassword = TextEditingController();
+  var date;
   @override
+  void initState() {
+    super.initState();
+    _accountLogic = AccountLogic(context);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
@@ -46,6 +57,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         ),
                         height: 60.0,
                         child: TextField(
+                          controller: _textFieldControllerEmail,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(
                               color: Colors.white, fontFamily: 'OpenSans'),
@@ -78,6 +90,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                         ),
                         height: 60.0,
                         child: TextField(
+                          controller: _textFieldControllerUsername,
                           keyboardType: TextInputType.name,
                           style: TextStyle(
                               color: Colors.white, fontFamily: 'OpenSans'),
@@ -88,7 +101,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                                 Icons.account_circle_outlined,
                                 color: Colors.white,
                               ),
-                              hintText: 'User',
+                              hintText: 'Username',
                               hintStyle: TextStyle(
                                 color: Colors.white54,
                                 fontFamily: 'OpenSans',
@@ -111,14 +124,14 @@ class _RegistrationViewState extends State<RegistrationView> {
                         height: 60.0,
                         child: TextField(
                           readOnly: true,
-                          controller: dateController,
+                          controller: _dateController,
                           onTap: () async {
-                            var date = await showDatePicker(
+                            date = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime(1900),
                                 lastDate: DateTime(2100));
-                            dateController.text =
+                            _dateController.text =
                                 date.toString().substring(0, 10);
                           },
                           style: TextStyle(
@@ -155,6 +168,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                               ),
                               height: 60.0,
                               child: TextField(
+                                controller: _textFieldControllerPassword,
                                 obscureText: true,
                                 style: TextStyle(
                                     color: Colors.white,
@@ -192,6 +206,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                               ),
                               height: 60.0,
                               child: TextField(
+                                controller: _textFieldControllerConfirmPassword,
                                 obscureText: true,
                                 style: TextStyle(
                                     color: Colors.white,
@@ -215,7 +230,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                 padding: EdgeInsets.symmetric(vertical: 25.0),
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => print('Register Button Pressed'),
+                  onPressed: () => registerFunction(),
                   style: ButtonStyle(
                       elevation: MaterialStateProperty.all(5.0),
                       padding: MaterialStateProperty.all(EdgeInsets.all(15.0)),
@@ -259,5 +274,17 @@ class _RegistrationViewState extends State<RegistrationView> {
         ),
       ),
     );
+  }
+
+  void registerFunction() async {
+    bool completed = await AccountLogic.didTapOnRegisterButton(context,
+        email: _textFieldControllerEmail.text,
+        password: _textFieldControllerPassword.text,
+        confirmPassword: _textFieldControllerConfirmPassword.text,
+        username: _textFieldControllerUsername.text,
+        birthdate: date);
+    if (completed) {
+      _accountLogic.goToLobbiesView();
+    }
   }
 }

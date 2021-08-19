@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:forat/logic/account_logic.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -7,7 +8,15 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  AccountLogic _accountLogic;
+  final _textFieldControllerEmail = TextEditingController();
+  final _textFieldControllerPassword = TextEditingController();
   @override
+  void initState() {
+    super.initState();
+    _accountLogic = AccountLogic(context);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
@@ -52,6 +61,7 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         height: 60.0,
                         child: TextField(
+                          controller: _textFieldControllerEmail,
                           keyboardType: TextInputType.emailAddress,
                           style: TextStyle(
                               color: Colors.white, fontFamily: 'OpenSans'),
@@ -96,6 +106,7 @@ class _LoginViewState extends State<LoginView> {
                               ),
                               height: 60.0,
                               child: TextField(
+                                controller: _textFieldControllerPassword,
                                 obscureText: true,
                                 style: TextStyle(
                                     color: Colors.white,
@@ -133,7 +144,7 @@ class _LoginViewState extends State<LoginView> {
                 padding: EdgeInsets.symmetric(vertical: 25.0),
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => print('Login Button Pressed'),
+                  onPressed: () => loginFunction(),
                   style: ButtonStyle(
                       elevation: MaterialStateProperty.all(5.0),
                       padding: MaterialStateProperty.all(EdgeInsets.all(15.0)),
@@ -153,7 +164,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
               GestureDetector(
-                onTap: () => print('Sign Up Button Pressed'),
+                onTap: () => _accountLogic.goToRegisterView(),
                 child: RichText(
                     text: TextSpan(children: [
                   TextSpan(
@@ -177,5 +188,14 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
+  }
+
+  void loginFunction() async {
+    bool completed = await AccountLogic.didTapOnLoginAccountButton(context,
+        email: _textFieldControllerEmail.text,
+        password: _textFieldControllerPassword.text);
+    if (completed) {
+      _accountLogic.goToLobbiesView();
+    }
   }
 }
