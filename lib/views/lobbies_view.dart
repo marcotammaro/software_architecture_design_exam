@@ -24,6 +24,8 @@ class _LobbiesViewState extends State<LobbiesView> {
 
     /// Start listen for notifications of lobbies messages
     NotificationLogic.instance.start();
+    NotificationLogic.instance.resetIsInitializing();
+
     userHaveLobbies();
   }
 

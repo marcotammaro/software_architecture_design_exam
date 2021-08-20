@@ -55,6 +55,11 @@ class NotificationLogic {
     _unlistenedLobby = null;
   }
 
+  /// Function to reset the _isInitializing propriety to not show notification on lobbies_view loading
+  void resetIsInitializing() {
+    _isInitializing = true;
+  }
+
   /// Function required to initialize the notification plugin specifics
   void _initializePlatformSpecifics() async {
     var initializationAndroidSettings =
