@@ -5,6 +5,7 @@ import 'package:forat/bloc/messages_bloc.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/logic/message_logic.dart';
+import 'package:forat/logic/notification_logic.dart';
 import 'package:forat/models/lobby.dart';
 import 'package:forat/models/message.dart';
 import 'package:forat/models/topics.dart';
@@ -53,6 +54,8 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
     _textFieldController.dispose();
     _messagesController.stopListenMessages();
     _keyboardVisibility.removeListener(_keyboardListnerID);
+    // Start again listening for the notification of the closing lobby
+    NotificationLogic.instance.removeStopListenForLobby();
     super.dispose();
   }
 

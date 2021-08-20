@@ -6,6 +6,7 @@ import 'package:forat/bloc/events/lobbies_event.dart';
 import 'package:forat/bloc/lobbies_bloc.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
+import 'package:forat/logic/notification_logic.dart';
 import 'package:forat/models/lobby.dart';
 import 'package:forat/models/topics.dart';
 import 'package:forat/utility/show_error_alert.dart';
@@ -69,6 +70,8 @@ class LobbyLogic {
   }
 
   static void goToLobbyDetailedView(BuildContext context, Lobby lobby) {
+    /// Stop listen messages notification for the opened lobby
+    NotificationLogic.instance.stopListenForLobby(lobby.key);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_context) => LobbyDetailsView(lobby: lobby)),

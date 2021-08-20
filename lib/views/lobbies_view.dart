@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forat/bloc/lobbies_bloc.dart';
 import 'package:forat/logic/lobby_logic.dart';
+import 'package:forat/logic/notification_logic.dart';
 import 'package:forat/models/lobby.dart';
 import 'package:forat/models/topics.dart';
 import 'package:shimmer/shimmer.dart';
@@ -20,6 +21,9 @@ class _LobbiesViewState extends State<LobbiesView> {
   void initState() {
     super.initState();
     _controller = LobbyLogic(context);
+
+    /// Start listen for notifications of lobbies messages
+    NotificationLogic.instance.start();
     userHaveLobbies();
   }
 

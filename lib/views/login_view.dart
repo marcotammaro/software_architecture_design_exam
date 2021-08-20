@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forat/logic/account_logic.dart';
+import 'package:forat/logic/notification_logic.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -14,7 +15,11 @@ class _LoginViewState extends State<LoginView> {
   @override
   void initState() {
     super.initState();
+
     _accountLogic = AccountLogic(context);
+
+    // Stop reciving notification for messages
+    NotificationLogic.instance.stop();
   }
 
   Widget build(BuildContext context) {
