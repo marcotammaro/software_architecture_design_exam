@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/views/lobbies_view.dart';
+import 'package:forat/views/login_view.dart';
 import 'package:forat/views/profile_view.dart';
 import 'package:forat/views/search_view.dart';
 
@@ -29,6 +31,10 @@ class _AppLauncherState extends State<AppLauncher> {
 
   @override
   Widget build(BuildContext context) {
+    if (AuthWrapper.instance.getCurrentUsername() == "" ||
+        AuthWrapper.instance.getCurrentUserEmail() == "") {
+      return LoginView();
+    }
     return Scaffold(
       body: _getCurrentBody(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(

@@ -131,8 +131,10 @@ class _RegistrationViewState extends State<RegistrationView> {
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime(1900),
                                 lastDate: DateTime(2100));
-                            _dateController.text =
-                                date.toString().substring(0, 10);
+                            if (date != null) {
+                              _dateController.text =
+                                  date.toString().substring(0, 10);
+                            }
                           },
                           style: TextStyle(
                               color: Colors.white, fontFamily: 'OpenSans'),
@@ -250,7 +252,7 @@ class _RegistrationViewState extends State<RegistrationView> {
                 ),
               ),
               GestureDetector(
-                onTap: () => print('Login Button Pressed'),
+                onTap: () => _accountLogic.goToLoginView(),
                 child: RichText(
                     text: TextSpan(children: [
                   TextSpan(

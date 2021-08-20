@@ -121,6 +121,5 @@ class _ProfileViewState extends State<ProfileView> {
   void onLogout() {
     AuthWrapper.instance.logoutUser();
     AccountLogic(context).goToLoginView();
-    //TODO to test
   }
 }

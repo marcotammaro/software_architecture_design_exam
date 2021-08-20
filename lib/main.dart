@@ -4,10 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/app_launcher.dart';
 import 'package:forat/bloc/lobbies_bloc.dart';
 import 'package:forat/bloc/messages_bloc.dart';
-import 'package:forat/views/login_view.dart';
-import 'package:forat/views/registraton_view.dart';
 
-import 'firebase_wrappers/auth_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +40,7 @@ class MyApp extends StatelessWidget {
               displayColor: Color(0xFF0F1546),
             ),
       ),
-      home: LoginView(),
+      home: AppLauncher(),
     );
   }
 }

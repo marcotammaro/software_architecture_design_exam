@@ -17,7 +17,7 @@ class AccountLogic {
   // MARK: Navigator Logic
 
   void goToLobbiesView() async {
-    Navigator.push(
+    Navigator.pushReplacement(
       _context,
       MaterialPageRoute(builder: (_context) => AppLauncher()),
     );
@@ -47,13 +47,88 @@ class AccountLogic {
     String confirmPassword,
     DateTime birthdate,
   }) async {
-    //TODO: Check if age > 18
-    print(birthdate);
+    if (email == null || email == "") {
+      showErrorAlert(
+        context,
+        message: "Please enter an email.",
+      );
+      return false;
+    }
+    if (username == null || username == "") {
+      showErrorAlert(
+        context,
+        message: "Please enter an username",
+      );
+      return false;
+    }
+    if (birthdate == null) {
+      showErrorAlert(
+        context,
+        message: "Please enter your birthdate.",
+      );
+      return false;
+    }
+    if (password == null || password == "") {
+      showErrorAlert(
+        context,
+        message: "Please enter a password.",
+      );
+      return false;
+    }
+    if (confirmPassword == null || confirmPassword == "") {
+      showErrorAlert(
+        context,
+        message: "Please confirm your password.",
+      );
+      return false;
+    }
+    if (password != confirmPassword) {
+      showErrorAlert(
+        context,
+        message: "Password doesn't match.",
+      );
+      return false;
+    }
+    if (password.length < 6) {
+      showErrorAlert(
+        context,
+        message: "Password must have 6 characters.",
+      );
+      return false;
+    }
+
+    var verifyAge = birthdate.add(const Duration(days: 6570));
+
+    if (DateTime.now().isBefore(verifyAge) == true) {
+      showErrorAlert(
+        context,
+        message: "Your age is under 18.",
+      );
+      return false;
+    }
     FirebaseAuthException exception = await AuthWrapper.instance
         .createUser(username: username, email: email, password: password);
 
     if (exception != null) {
-      //TODO: Manage error
+      if (exception.code == "invalid-email") {
+        showErrorAlert(
+          context,
+          message: "Please insert a valid email.",
+        );
+        return false;
+      }
+      if (exception.code == "email-already-in-use" ||
+          exception.code == "username-already-in-use") {
+        showErrorAlert(
+          context,
+          message: "Email or username already in use.",
+        );
+        return false;
+      }
+      showErrorAlert(
+        context,
+        message: "Something went wrong, try later.",
+      );
       return false;
     }
 
@@ -86,8 +161,6 @@ class AccountLogic {
           .loginUser(email: email, password: password);
 
       if (exception != null) {
-        //TO DO: exception
-
         showErrorAlert(
           context,
           message: "Wrong Email or Password.",
