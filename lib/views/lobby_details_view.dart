@@ -111,27 +111,29 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              height: _bottomBarHeight,
-              width: MediaQuery.of(context).size.width * 0.8,
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color:
-                        Theme.of(context).unselectedWidgetColor.withAlpha(100),
-                    blurRadius: 10,
-                  )
-                ],
-              ),
-              padding: EdgeInsets.only(left: 15),
-              child: TextField(
-                controller: _textFieldController,
-                enabled: true,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Enter a message',
+            Expanded(
+              child: Container(
+                height: _bottomBarHeight,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).backgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context)
+                          .unselectedWidgetColor
+                          .withAlpha(100),
+                      blurRadius: 10,
+                    )
+                  ],
+                ),
+                padding: EdgeInsets.only(left: 15),
+                child: TextField(
+                  controller: _textFieldController,
+                  enabled: true,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Enter a message',
+                  ),
                 ),
               ),
             ),
