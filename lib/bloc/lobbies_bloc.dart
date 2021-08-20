@@ -19,7 +19,6 @@ class LobbiesBloc extends Bloc<LobbiesEvent, List<Lobby>> {
         yield newState.reversed.toList();
         break;
       case LobbiesEventType.delete:
-        // TODO
         yield state;
         break;
       case LobbiesEventType.deleteAll:
