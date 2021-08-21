@@ -101,6 +101,7 @@ class _LobbiesViewState extends State<LobbiesView> {
   }
 
   Widget appBar() => AppBar(
+        automaticallyImplyLeading: false, //hide back button
         backgroundColor: Theme.of(context).backgroundColor,
         elevation: 0,
         actions: [

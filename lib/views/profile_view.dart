@@ -32,6 +32,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   Widget appBar() {
     return AppBar(
+      automaticallyImplyLeading: false, //hide back button
       elevation: 0,
       title: Text(
         "Profile",
