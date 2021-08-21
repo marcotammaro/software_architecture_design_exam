@@ -21,12 +21,11 @@ class _LobbiesViewState extends State<LobbiesView> {
   void initState() {
     super.initState();
     _controller = LobbyLogic(context);
+    userHaveLobbies();
 
     /// Start listen for notifications of lobbies messages
     NotificationLogic.instance.start();
     NotificationLogic.instance.resetIsInitializing();
-
-    userHaveLobbies();
   }
 
   @override
@@ -141,12 +140,20 @@ class _LobbiesViewState extends State<LobbiesView> {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
+          SizedBox(height: hasLastMessage ? 10 : 0),
+          hasLastMessage
+              ? Text(
+                  "${lobby.lastMessage.username ?? ""}: ${lobby.lastMessage.text ?? ""}",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 14),
+                )
+              : const SizedBox.shrink(),
           SizedBox(height: hasLastMessage ? 5 : 0),
           hasLastMessage
               ? Text(
-                  lobby.lastMessage.text ?? "",
+                  "${lobby.lastMessage.dateTime.hour ?? ""} : ${lobby.lastMessage.dateTime.minute ?? ""}",
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 14),
+                  style: TextStyle(fontSize: 10),
                 )
               : const SizedBox.shrink(),
           Align(
