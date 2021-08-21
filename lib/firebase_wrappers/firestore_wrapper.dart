@@ -71,6 +71,7 @@ class FirestoreWrapper {
     _lobbiesCollection
         .doc(uid)
         .update({'lastMessageTimestamp': dateTime.millisecondsSinceEpoch});
+    _lobbiesCollection.doc(uid).update({'lastMessageUsername': username});
 
     // saving message
     DocumentReference ref =

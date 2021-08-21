@@ -21,6 +21,7 @@ class Lobby {
       dateTime: DateTime.fromMillisecondsSinceEpoch(
         data["lastMessageTimestamp"],
       ),
+      username: data["lastMessageUsername"],
     );
   }
   Lobby.empty() {
