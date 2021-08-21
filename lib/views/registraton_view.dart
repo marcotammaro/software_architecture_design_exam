@@ -22,6 +22,7 @@ class _RegistrationViewState extends State<RegistrationView> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Container(
@@ -36,7 +37,7 @@ class _RegistrationViewState extends State<RegistrationView> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Image(
-                  image: AssetImage("images/test.png"),
+                  image: AssetImage("images/logo.png"),
                   alignment: Alignment.center,
                 ),
                 SizedBox(height: 30.0),
@@ -65,7 +66,7 @@ class _RegistrationViewState extends State<RegistrationView> {
     return Container(
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-        color: Color(0xFF6CA8F1),
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
@@ -101,7 +102,7 @@ class _RegistrationViewState extends State<RegistrationView> {
     return Container(
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-        color: Color(0xFF6CA8F1),
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
@@ -137,7 +138,7 @@ class _RegistrationViewState extends State<RegistrationView> {
     return Container(
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-        color: Color(0xFF6CA8F1),
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
@@ -186,7 +187,7 @@ class _RegistrationViewState extends State<RegistrationView> {
         Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            color: Color(0xFF6CA8F1),
+            color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(10.0),
             boxShadow: [
               BoxShadow(
@@ -224,7 +225,7 @@ class _RegistrationViewState extends State<RegistrationView> {
     return Container(
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-        color: Color(0xFF6CA8F1),
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
@@ -267,7 +268,8 @@ class _RegistrationViewState extends State<RegistrationView> {
             padding: MaterialStateProperty.all(EdgeInsets.all(15.0)),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0))),
-            backgroundColor: MaterialStateProperty.all(Colors.blue)),
+            backgroundColor:
+                MaterialStateProperty.all(Theme.of(context).primaryColor)),
         child: Text(
           'REGISTER',
           style: TextStyle(
@@ -291,14 +293,14 @@ class _RegistrationViewState extends State<RegistrationView> {
             TextSpan(
                 text: 'Already have an Account? ',
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                   fontSize: 18.0,
                   fontWeight: FontWeight.w400,
                 )),
             TextSpan(
               text: 'Login',
               style: TextStyle(
-                color: Colors.blue,
+                color: Theme.of(context).primaryColor,
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),

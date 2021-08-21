@@ -24,6 +24,7 @@ class _LoginViewState extends State<LoginView> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
@@ -36,7 +37,7 @@ class _LoginViewState extends State<LoginView> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Image(
-                image: AssetImage("images/test.png"),
+                image: AssetImage("images/logo.png"),
                 alignment: Alignment.center,
               ),
               SizedBox(height: 30.0),
@@ -62,7 +63,7 @@ class _LoginViewState extends State<LoginView> {
         Text(
           'Email',
           style: TextStyle(
-            color: Colors.blue,
+            color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),
@@ -71,7 +72,7 @@ class _LoginViewState extends State<LoginView> {
         Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            color: Color(0xFF6CA8F1),
+            color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(10.0),
             boxShadow: [
               BoxShadow(
@@ -112,7 +113,7 @@ class _LoginViewState extends State<LoginView> {
         Text(
           'Password',
           style: TextStyle(
-            color: Colors.blue,
+            color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),
@@ -121,7 +122,7 @@ class _LoginViewState extends State<LoginView> {
         Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            color: Color(0xFF6CA8F1),
+            color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(10.0),
             boxShadow: [
               BoxShadow(
@@ -162,7 +163,7 @@ class _LoginViewState extends State<LoginView> {
         child: Text(
           'Forgot Password?',
           style: TextStyle(
-            color: Colors.blue,
+            color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),
@@ -183,7 +184,8 @@ class _LoginViewState extends State<LoginView> {
             padding: MaterialStateProperty.all(EdgeInsets.all(15.0)),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0))),
-            backgroundColor: MaterialStateProperty.all(Colors.blue)),
+            backgroundColor:
+                MaterialStateProperty.all(Theme.of(context).primaryColor)),
         child: Text(
           'LOGIN',
           style: TextStyle(
@@ -207,14 +209,14 @@ class _LoginViewState extends State<LoginView> {
             TextSpan(
                 text: 'Don\'t have an Account? ',
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: Theme.of(context).primaryColor,
                   fontSize: 18.0,
                   fontWeight: FontWeight.w400,
                 )),
             TextSpan(
               text: 'Sign Up',
               style: TextStyle(
-                color: Colors.blue,
+                color: Theme.of(context).primaryColor,
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
