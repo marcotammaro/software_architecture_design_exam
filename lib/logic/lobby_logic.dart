@@ -12,6 +12,7 @@ import 'package:forat/models/topics.dart';
 import 'package:forat/utility/show_error_alert.dart';
 import 'package:forat/views/lobby_creation_view.dart';
 import 'package:forat/views/lobby_details_view.dart';
+import 'package:forat/views/lobby_info_view.dart';
 
 class LobbyLogic {
   // Class Attributes
@@ -75,6 +76,13 @@ class LobbyLogic {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_context) => LobbyDetailsView(lobby: lobby)),
+    );
+  }
+
+  static void goToLobbyInfoView(BuildContext context, Lobby lobby) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_context) => LobbyInfoView(lobby: lobby)),
     );
   }
 
@@ -164,6 +172,16 @@ class LobbyLogic {
 
       return docs.map((doc) => Lobby.fromMap(doc.data(), id: doc.id)).toList();
     }
+  }
+
+  /// Function called when the user is in lobby info view and want to
+  /// leave the specified lobby
+  static Future<bool> didTapOnLeaveLobby(
+      {String lobbyName, String username}) async {
+    if (username == null) return false;
+    await FirestoreWrapper.instance
+        .removeUserToLobby(lobbyName: lobbyName, username: username);
+    return true;
   }
 
   /// Function called when the user is in searchView and do not insert any

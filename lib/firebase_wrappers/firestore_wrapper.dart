@@ -83,6 +83,25 @@ class FirestoreWrapper {
     return ref.id;
   }
 
+  // MARK: Remove functions
+
+  /// Remove the passed username to the lobby that as the name as the
+  /// passed lobbyName and increment the users counter
+  Future removeUserToLobby({String lobbyName, String username}) async {
+    var foundedLobbies =
+        await _lobbiesCollection.where('name', isEqualTo: lobbyName).get();
+
+    if (foundedLobbies.docs.isEmpty) return;
+
+    int currentUsersCount = foundedLobbies.docs.first.get('usersCount');
+
+    String uid = foundedLobbies.docs.first.id;
+    await _lobbiesCollection.doc(uid).update({
+      "users": FieldValue.arrayRemove([username]),
+      "usersCount": currentUsersCount - 1,
+    });
+  }
+
   // MARK: Get functions
 
   /// Return a list of the first 5th lobbies for more users

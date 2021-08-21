@@ -64,7 +64,10 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
-        title: Text(widget.lobby.name),
+        title: GestureDetector(
+          child: Text(widget.lobby.name),
+          onTap: () => LobbyLogic.goToLobbyInfoView(context, widget.lobby),
+        ),
         backgroundColor: Theme.of(context).backgroundColor,
         elevation: 1,
       ),
