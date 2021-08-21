@@ -3,6 +3,6 @@ class Notification {
   String text;
   String from;
   DateTime datetime;
-  String lobbyName;
-  Notification({this.key, this.lobbyName, this.text, this.from, this.datetime});
+  String title;
+  Notification({this.key, this.title, this.text, this.from, this.datetime});
 }

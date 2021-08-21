@@ -63,7 +63,7 @@ class NotificationLogic {
   /// Function required to initialize the notification plugin specifics
   void _initializePlatformSpecifics() async {
     var initializationAndroidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('notification_icon');
 
     var initializationSettingsIOS = IOSInitializationSettings(
       // setting this values to false in order to ask for ios permission later and not at init time
@@ -120,7 +120,7 @@ class NotificationLogic {
 
     flutterLocalNotificationsPlugin.show(
       notification.key,
-      notification.lobbyName,
+      notification.title,
       notification.text,
       platformChannelSpecifics,
     );
@@ -143,8 +143,9 @@ class NotificationLogic {
         Notification notification = Notification(
           key: Random().nextInt(9999), // 2^32 is max value usable as key
           from: newLobby.lastMessage.username ?? "unknow",
-          text: newLobby.lastMessage.text ?? "",
-          lobbyName: newLobby.name,
+          text:
+              "${newLobby.lastMessage.username}: ${newLobby.lastMessage.text}",
+          title: newLobby.name,
           datetime: DateTime.now(),
         );
 
