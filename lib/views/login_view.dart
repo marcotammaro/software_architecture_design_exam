@@ -230,7 +230,7 @@ class _LoginViewState extends State<LoginView> {
   // MARK: User Actions
 
   void onLogin() async {
-    bool completed = await AccountLogic.didTapOnLoginAccountButton(context,
+    bool completed = await _accountLogic.didTapOnLoginAccountButton(
         email: _textFieldControllerEmail.text,
         password: _textFieldControllerPassword.text);
     if (completed) {

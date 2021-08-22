@@ -39,8 +39,7 @@ class AccountLogic {
 
   // MARK: Buttons Logic
 
-  static Future<bool> didTapOnRegisterButton(
-    BuildContext context, {
+  Future<bool> didTapOnRegisterButton({
     String username,
     String email,
     String password,
@@ -49,49 +48,49 @@ class AccountLogic {
   }) async {
     if (email == null || email == "") {
       showErrorAlert(
-        context,
+        _context,
         message: "Please enter an email.",
       );
       return false;
     }
     if (username == null || username == "") {
       showErrorAlert(
-        context,
+        _context,
         message: "Please enter an username",
       );
       return false;
     }
     if (birthdate == null) {
       showErrorAlert(
-        context,
+        _context,
         message: "Please enter your birthdate.",
       );
       return false;
     }
     if (password == null || password == "") {
       showErrorAlert(
-        context,
+        _context,
         message: "Please enter a password.",
       );
       return false;
     }
     if (confirmPassword == null || confirmPassword == "") {
       showErrorAlert(
-        context,
+        _context,
         message: "Please confirm your password.",
       );
       return false;
     }
     if (password != confirmPassword) {
       showErrorAlert(
-        context,
+        _context,
         message: "Password doesn't match.",
       );
       return false;
     }
     if (password.length < 6) {
       showErrorAlert(
-        context,
+        _context,
         message: "Password must have 6 characters.",
       );
       return false;
@@ -101,18 +100,19 @@ class AccountLogic {
 
     if (DateTime.now().isBefore(verifyAge) == true) {
       showErrorAlert(
-        context,
+        _context,
         message: "Your age is under 18.",
       );
       return false;
     }
+
     FirebaseAuthException exception = await AuthWrapper.instance
         .createUser(username: username, email: email, password: password);
 
     if (exception != null) {
       if (exception.code == "invalid-email") {
         showErrorAlert(
-          context,
+          _context,
           message: "Please insert a valid email.",
         );
         return false;
@@ -120,13 +120,13 @@ class AccountLogic {
       if (exception.code == "email-already-in-use" ||
           exception.code == "username-already-in-use") {
         showErrorAlert(
-          context,
+          _context,
           message: "Email or username already in use.",
         );
         return false;
       }
       showErrorAlert(
-        context,
+        _context,
         message: "Something went wrong, try later.",
       );
       return false;
@@ -139,20 +139,19 @@ class AccountLogic {
     return true;
   }
 
-  static Future<bool> didTapOnLoginAccountButton(
-    BuildContext context, {
+  Future<bool> didTapOnLoginAccountButton({
     String email,
     String password,
   }) async {
     if (email == "" || email == null) {
       showErrorAlert(
-        context,
+        _context,
         message: "Please, insert an Email.",
       );
       return false;
     } else if (password == "" || password == null) {
       showErrorAlert(
-        context,
+        _context,
         message: "Please, insert password.",
       );
       return false;
@@ -162,7 +161,7 @@ class AccountLogic {
 
       if (exception != null) {
         showErrorAlert(
-          context,
+          _context,
           message: "Wrong Email or Password.",
         );
         return false;

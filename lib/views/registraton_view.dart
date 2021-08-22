@@ -314,8 +314,7 @@ class _RegistrationViewState extends State<RegistrationView> {
   // MARK: User Actions
 
   void onRegister() async {
-    bool completed = await AccountLogic.didTapOnRegisterButton(
-      context,
+    bool completed = await _accountLogic.didTapOnRegisterButton(
       email: _textFieldControllerEmail.text,
       password: _textFieldControllerPassword.text,
       confirmPassword: _textFieldControllerConfirmPassword.text,
