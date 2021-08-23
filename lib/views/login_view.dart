@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forat/logic/account_logic.dart';
 import 'package:forat/logic/notification_logic.dart';
+import 'package:forat/utility/show_error_alert.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class _LoginViewState extends State<LoginView> {
   void initState() {
     super.initState();
 
-    _accountLogic = AccountLogic(context);
+    _accountLogic = AccountLogic();
 
     // Stop reciving notification for messages
     NotificationLogic.instance.stop();
@@ -202,7 +203,7 @@ class _LoginViewState extends State<LoginView> {
 
   Widget signUpButton() {
     return GestureDetector(
-      onTap: () => _accountLogic.goToRegisterView(),
+      onTap: () => AccountLogic.goToRegisterView(context),
       child: RichText(
         text: TextSpan(
           children: [
@@ -230,11 +231,14 @@ class _LoginViewState extends State<LoginView> {
   // MARK: User Actions
 
   void onLogin() async {
-    bool completed = await _accountLogic.didTapOnLoginAccountButton(
-        email: _textFieldControllerEmail.text,
-        password: _textFieldControllerPassword.text);
-    if (completed) {
-      _accountLogic.goToLobbiesView();
+    String value = await _accountLogic.didTapOnLoginAccountButton(
+      email: _textFieldControllerEmail.text,
+      password: _textFieldControllerPassword.text,
+    );
+    if (value == "") {
+      AccountLogic.goToLobbiesView(context);
+    } else {
+      showErrorAlert(context, message: value);
     }
   }
 }

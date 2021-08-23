@@ -37,7 +37,7 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
     );
 
     _messagesController = MessageLogic(context, widget.lobby.name);
-    LobbyLogic.checkForUserJoined(lobby: widget.lobby).then((value) {
+    LobbyLogic(context).checkForUserJoined(lobby: widget.lobby).then((value) {
       setState(() => _isButtonEnabled = !value);
     });
 
@@ -96,12 +96,13 @@ class _LobbyDetailsViewState extends State<LobbyDetailsView> {
         child: ElevatedButton(
           style: style,
           onPressed: () {
-            LobbyLogic.didTapOnJoinLobbyButton(
+            LobbyLogic(context)
+                .didTapOnJoinLobbyButton(
                     lobbyName: widget.lobby.name,
                     username: AuthWrapper.instance.getCurrentUsername())
                 .then(
-              (value) => setState(() => _isButtonEnabled = !value),
-            );
+                  (value) => setState(() => _isButtonEnabled = !value),
+                );
           },
           child: const Text('Join Chat!'),
         ),

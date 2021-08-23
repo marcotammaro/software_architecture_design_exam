@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/bloc/events/messages_event.dart';
@@ -13,19 +12,21 @@ class MessageLogic {
   BuildContext _context;
   StreamSubscription<QuerySnapshot> _stream;
   String _lobbyName;
+  FirestoreWrapper firestoreWrapper;
 
   // Constructor
-  MessageLogic(this._context, this._lobbyName) {
+  MessageLogic(this._context, this._lobbyName,
+      [FirestoreWrapper _firestoreWrapper]) {
+    this.firestoreWrapper = _firestoreWrapper ?? FirestoreWrapper.instance;
     startListenMessages();
   }
 
   // MARK: Utility Functions
 
   /// This function will start listening for messages snapshot on firebase
-  void startListenMessages() {
-    FirestoreWrapper.instance.getMessagesStream(_lobbyName).then((value) {
-      _stream = value.listen(onMessageEvent);
-    });
+  void startListenMessages() async {
+    var value = await firestoreWrapper.getMessagesStream(_lobbyName);
+    if (value != null) _stream = value.listen(onMessageEvent);
   }
 
   /// Callback called when the messages snapshot updates
@@ -42,19 +43,20 @@ class MessageLogic {
   /// Function to stop listening from messages snapshot
   /// Should be called once the listening view is dismissed
   void stopListenMessages() {
-    _stream.cancel();
+    if (_stream != null) _stream.cancel();
   }
 
   // MARK: Navigator Logic
 
-  void didTapOnSendButton(String text) {
-    if (FirebaseAuth.instance.currentUser == null || text == "") return;
+  bool didTapOnSendButton(String text) {
+    if (text == "") return false;
 
     var dateTime = DateTime.now();
-    FirestoreWrapper.instance.addMessage(
+    firestoreWrapper.addMessage(
       dateTime: dateTime,
       lobbyName: _lobbyName,
       text: text,
     );
+    return true;
   }
 }

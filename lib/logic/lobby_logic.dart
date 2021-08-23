@@ -9,7 +9,6 @@ import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
 import 'package:forat/logic/notification_logic.dart';
 import 'package:forat/models/lobby.dart';
 import 'package:forat/models/topics.dart';
-import 'package:forat/utility/show_error_alert.dart';
 import 'package:forat/views/lobby_creation_view.dart';
 import 'package:forat/views/lobby_details_view.dart';
 import 'package:forat/views/lobby_info_view.dart';
@@ -18,19 +17,26 @@ class LobbyLogic {
   // Class Attributes
   BuildContext _streamContext;
   StreamSubscription<QuerySnapshot> _stream;
+  AuthWrapper authWrapper;
+  FirestoreWrapper firestoreWrapper;
 
   // Constructor
-  LobbyLogic(this._streamContext) {
+  LobbyLogic(
+    this._streamContext, [
+    AuthWrapper _authWrapper,
+    FirestoreWrapper _firestoreWrapper,
+  ]) {
+    this.authWrapper = _authWrapper ?? AuthWrapper.instance;
+    this.firestoreWrapper = _firestoreWrapper ?? FirestoreWrapper.instance;
     startListenLobbies();
   }
 
   // MARK: Utility Functions
 
   /// This function will start listening for lobbies snapshot on firebase
-  void startListenLobbies() {
-    FirestoreWrapper.instance.getUserLobbiesStream().then((value) {
-      _stream = value.listen(onLobbiesEvent);
-    });
+  void startListenLobbies() async {
+    var value = await firestoreWrapper.getUserLobbiesStream();
+    if (value != null) _stream = value.listen(onLobbiesEvent);
   }
 
   /// Callback called when the lobbies snapshot updates
@@ -46,26 +52,25 @@ class LobbyLogic {
   /// Function to stop listening from lobbies snapshot
   /// Should be called once the listening view is dismissed
   void stopListenLobbies() {
-    _stream.cancel();
+    if (_stream != null) _stream.cancel();
   }
 
   /// Return true if user have lobbies
   Future<bool> userHaveLobbies() async {
-    bool userHasLobbies = await FirestoreWrapper.instance.checkForUserLobbies();
-    return userHasLobbies;
+    return await firestoreWrapper.checkForUserLobbies();
   }
 
   /// This function return true if the current user has logged in into the
   /// passed lobby; false otherwise
-  static Future<bool> checkForUserJoined({Lobby lobby}) async {
-    return lobby.users.contains(AuthWrapper.instance.getCurrentUsername());
+  Future<bool> checkForUserJoined({Lobby lobby}) async {
+    return lobby.users.contains(authWrapper.getCurrentUsername());
   }
 
   // MARK: Navigator Logic
 
-  void goToLobbyCreationView() async {
+  static void goToLobbyCreationView(BuildContext context) async {
     Navigator.push(
-      _streamContext,
+      context,
       MaterialPageRoute(builder: (_context) => LobbyCreationView()),
     );
   }
@@ -91,84 +96,66 @@ class LobbyLogic {
   /// Function called when the user is in the LobbyCreationView and user tap on save button.
   /// This function will check for correct topicIndex and name; if some fields are incorrect, it will return false and show an error screen.
   /// If everything is fine, it will add the lobby to firestore and will return true once all operation have completed.
-  static Future<bool> didTapOnCreateLobbyButton(
-    BuildContext context, {
+  Future<String> didTapOnCreateLobbyButton({
     String name,
     String description,
     int topicIndex,
   }) async {
     // Checking if user choose a topic for the lobby
     if (topicIndex == null) {
-      showErrorAlert(
-        context,
-        message: "Please, select a topic.",
-      );
-      return false;
+      return "Please, select a topic.";
     }
     // Checking if user choose a name for the lobby
     if (name == null || name == "") {
-      showErrorAlert(
-        context,
-        message: "Please, insert a name.",
-      );
-      return false;
+      return "Please, insert a name.";
     }
 
     // checking for unique lobby name
-    bool alreadyExist = await FirestoreWrapper.instance
-        .checkForUniqueLobbyName(lobbyName: name);
+    bool alreadyExist =
+        await firestoreWrapper.checkForUniqueLobbyName(lobbyName: name);
 
     // douplicated lobby name => show error
     if (alreadyExist) {
-      showErrorAlert(
-        context,
-        message: "The name of the lobby already exist",
-      );
-      return false;
+      return "The name of the lobby already exist";
     }
 
-    await FirestoreWrapper.instance.addLobby(
+    await firestoreWrapper.addLobby(
       name: name,
       description: description,
       topic: topicIndex,
     );
 
-    return true;
+    return "";
   }
 
   /// Function called when the user is in a lobbyDetailsView and want to join the lobby
   /// If the passed username is equal to null or the saving procedure fail, the function return false.
   /// If everything goes fine, the function return true.
-  static Future<bool> didTapOnJoinLobbyButton(
+  Future<bool> didTapOnJoinLobbyButton(
       {String lobbyName, String username}) async {
     if (username == null) return false;
-    await FirestoreWrapper.instance
-        .addUserToLobby(lobbyName: lobbyName, username: username);
+    await firestoreWrapper.addUserToLobby(
+        lobbyName: lobbyName, username: username);
     return true;
   }
 
   /// Function called when the user is in searchView and want to search for a
   /// specific lobby. The function will search the lobby corresponding to
   /// the passed name
-  static Future<List<Lobby>> didTapOnSearchButton(BuildContext context,
-      {String nameKeyword}) async {
+  Future<List<Lobby>> didTapOnSearchButton({String nameKeyword}) async {
     if (nameKeyword.startsWith('@')) {
       String topicName = nameKeyword.replaceFirst("@", "");
+      if (topicName == "" || topicName == null) return null;
       Topics topic = TopicsHelper.fromString(topicName);
-      if (topic == null) {
-        showErrorAlert(
-          context,
-          message: "No topics found with the inserted name",
-        );
-        return null;
-      }
+      if (topic == null) return null;
 
-      List<QueryDocumentSnapshot<Object>> docs = await FirestoreWrapper.instance
-          .getTrendLobbiesWithTopic(topic.toInt());
+      List<QueryDocumentSnapshot<Object>> docs =
+          await firestoreWrapper.getTrendLobbiesWithTopic(topic.toInt());
       return docs.map((doc) => Lobby.fromMap(doc.data(), id: doc.id)).toList();
     } else {
-      List<QueryDocumentSnapshot<Object>> docs = await FirestoreWrapper.instance
-          .getTrendLobbiesWithNameContaining(nameKeyword);
+      if (nameKeyword == "" || nameKeyword == null) return null;
+      List<QueryDocumentSnapshot<Object>> docs =
+          await firestoreWrapper.getTrendLobbiesWithNameContaining(nameKeyword);
 
       return docs.map((doc) => Lobby.fromMap(doc.data(), id: doc.id)).toList();
     }
@@ -176,31 +163,29 @@ class LobbyLogic {
 
   /// Function called when the user is in lobby info view and want to
   /// leave the specified lobby
-  static Future<bool> didTapOnLeaveLobby(
-      {String lobbyName, String username}) async {
-    if (username == null) return false;
-    await FirestoreWrapper.instance
-        .removeUserToLobby(lobbyName: lobbyName, username: username);
+  Future<bool> didTapOnLeaveLobby({String lobbyName, String username}) async {
+    if (lobbyName == null || lobbyName == "") return false;
+    if (username == null || username == "") return false;
+
+    await firestoreWrapper.removeUserToLobby(
+      lobbyName: lobbyName,
+      username: username,
+    );
     return true;
   }
 
   /// Function called when the user is in searchView and do not insert any
   /// search criteria
-  static Future<List<Lobby>> getTrendLobbies() async {
+  Future<List<Lobby>> getTrendLobbies() async {
     List<QueryDocumentSnapshot<Object>> docs =
-        await FirestoreWrapper.instance.getTrendLobbies();
-    List<Lobby> lobbies = [];
-    for (var doc in docs) {
-      lobbies.add(Lobby.fromMap(doc.data(), id: doc.id));
-    }
-    return lobbies;
+        await firestoreWrapper.getTrendLobbies();
+    return docs.map((doc) => Lobby.fromMap(doc.data(), id: doc.id)).toList();
   }
 
   /// Function called when the user press on a lobby in the search view
   /// to return the most updated lobby data
-  static Future<Lobby> getLobbyWithId(String id) async {
-    DocumentSnapshot<Object> doc =
-        await FirestoreWrapper.instance.getLobbiesWithId(id);
+  Future<Lobby> getLobbyWithId(String id) async {
+    DocumentSnapshot<Object> doc = await firestoreWrapper.getLobbiesWithId(id);
     if (doc.exists) {
       return Lobby.fromMap(doc.data(), id: doc.id);
     } else

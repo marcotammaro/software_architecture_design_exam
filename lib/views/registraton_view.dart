@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forat/logic/account_logic.dart';
+import 'package:forat/utility/show_error_alert.dart';
 
 class RegistrationView extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _RegistrationViewState extends State<RegistrationView> {
   @override
   void initState() {
     super.initState();
-    _accountLogic = AccountLogic(context);
+    _accountLogic = AccountLogic();
   }
 
   Widget build(BuildContext context) {
@@ -286,7 +287,7 @@ class _RegistrationViewState extends State<RegistrationView> {
 
   Widget signInButton() {
     return GestureDetector(
-      onTap: () => _accountLogic.goToLoginView(),
+      onTap: () => AccountLogic.goToLoginView(context),
       child: RichText(
         text: TextSpan(
           children: [
@@ -314,15 +315,17 @@ class _RegistrationViewState extends State<RegistrationView> {
   // MARK: User Actions
 
   void onRegister() async {
-    bool completed = await _accountLogic.didTapOnRegisterButton(
+    String value = await _accountLogic.didTapOnRegisterButton(
       email: _textFieldControllerEmail.text,
       password: _textFieldControllerPassword.text,
       confirmPassword: _textFieldControllerConfirmPassword.text,
       username: _textFieldControllerUsername.text,
       birthdate: date,
     );
-    if (completed) {
-      _accountLogic.goToLobbiesView();
+    if (value == "") {
+      AccountLogic.goToLobbiesView(context);
+    } else {
+      showErrorAlert(context, message: value);
     }
   }
 }

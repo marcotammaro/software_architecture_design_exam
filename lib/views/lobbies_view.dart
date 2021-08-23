@@ -107,7 +107,7 @@ class _LobbiesViewState extends State<LobbiesView> {
           IconButton(
             icon: Icon(FontAwesomeIcons.plus,
                 color: Theme.of(context).primaryColor),
-            onPressed: () => _controller.goToLobbyCreationView(),
+            onPressed: () => LobbyLogic.goToLobbyCreationView(context),
           ),
         ],
         title: Text(
@@ -117,7 +117,9 @@ class _LobbiesViewState extends State<LobbiesView> {
       );
 
   Widget lobbyCell(Lobby lobby) {
-    bool hasLastMessage = lobby.lastMessage != null;
+    bool hasLastMessage = lobby.lastMessage != null &&
+        lobby.lastMessage.username != null &&
+        lobby.lastMessage.username != "";
 
     return Container(
       decoration: BoxDecoration(

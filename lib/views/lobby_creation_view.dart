@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/models/topics.dart';
+import 'package:forat/utility/show_error_alert.dart';
 
 class LobbyCreationView extends StatefulWidget {
   @override
@@ -161,17 +162,15 @@ class _LobbyCreationViewState extends State<LobbyCreationView> {
   // MARK: User Actions
 
   void onSave() async {
-    bool completed = await LobbyLogic.didTapOnCreateLobbyButton(
-      context,
+    String error = await LobbyLogic(context).didTapOnCreateLobbyButton(
       name: _nameController.text,
       description: _descriptionController.text,
       topicIndex: _selectedChip,
     );
-    if (completed)
-      Navigator.pop(context, {
-        'name': _nameController.text,
-        'description': _descriptionController.text,
-        'topicIndex': _selectedChip,
-      });
+    if (error == "") {
+      Navigator.pop(context);
+    } else {
+      showErrorAlert(context, message: error);
+    }
   }
 }

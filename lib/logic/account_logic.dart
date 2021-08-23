@@ -3,34 +3,37 @@ import 'package:flutter/material.dart';
 import 'package:forat/app_launcher.dart';
 import 'package:forat/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
-import 'package:forat/utility/show_error_alert.dart';
 import 'package:forat/views/login_view.dart';
 import 'package:forat/views/registraton_view.dart';
 
 class AccountLogic {
-  // Class Attributes
-  BuildContext _context;
-
   // Constructor
-  AccountLogic(this._context);
+  AccountLogic([AuthWrapper _authWrapper, FirestoreWrapper _firestoreWrapper]) {
+    this.authWrapper = _authWrapper ?? AuthWrapper.instance;
+    this.firestoreWrapper = _firestoreWrapper ?? FirestoreWrapper.instance;
+  }
+
+  // MARK: Attributes
+  AuthWrapper authWrapper;
+  FirestoreWrapper firestoreWrapper;
 
   // MARK: Navigator Logic
 
-  void goToLobbiesView() async {
+  static void goToLobbiesView(BuildContext _context) async {
     Navigator.pushReplacement(
       _context,
       MaterialPageRoute(builder: (_context) => AppLauncher()),
     );
   }
 
-  void goToRegisterView() {
+  static void goToRegisterView(BuildContext _context) {
     Navigator.push(
       _context,
       MaterialPageRoute(builder: (_context) => RegistrationView()),
     );
   }
 
-  void goToLoginView() {
+  static void goToLoginView(BuildContext _context) {
     Navigator.pushReplacement(
       _context,
       MaterialPageRoute(builder: (_context) => LoginView()),
@@ -39,134 +42,61 @@ class AccountLogic {
 
   // MARK: Buttons Logic
 
-  Future<bool> didTapOnRegisterButton({
+  Future<String> didTapOnRegisterButton({
     String username,
     String email,
     String password,
     String confirmPassword,
     DateTime birthdate,
   }) async {
-    if (email == null || email == "") {
-      showErrorAlert(
-        _context,
-        message: "Please enter an email.",
-      );
-      return false;
-    }
-    if (username == null || username == "") {
-      showErrorAlert(
-        _context,
-        message: "Please enter an username",
-      );
-      return false;
-    }
-    if (birthdate == null) {
-      showErrorAlert(
-        _context,
-        message: "Please enter your birthdate.",
-      );
-      return false;
-    }
-    if (password == null || password == "") {
-      showErrorAlert(
-        _context,
-        message: "Please enter a password.",
-      );
-      return false;
-    }
-    if (confirmPassword == null || confirmPassword == "") {
-      showErrorAlert(
-        _context,
-        message: "Please confirm your password.",
-      );
-      return false;
-    }
-    if (password != confirmPassword) {
-      showErrorAlert(
-        _context,
-        message: "Password doesn't match.",
-      );
-      return false;
-    }
-    if (password.length < 6) {
-      showErrorAlert(
-        _context,
-        message: "Password must have 6 characters.",
-      );
-      return false;
-    }
+    if (email.isEmpty || email == "") return "Please enter an email.";
+    if (username == null || username == "") return "Please enter an username.";
+    if (birthdate == null) return "Please enter your birthdate.";
+    if (password == null || password == "") return "Please enter a password.";
+    if (confirmPassword == null || confirmPassword == "")
+      return "Please confirm your password.";
+    if (password != confirmPassword) return "Password doesn't match.";
+    if (password.length < 6) return "Password must have 6 characters.";
 
     var verifyAge = birthdate.add(const Duration(days: 6570));
 
     if (DateTime.now().isBefore(verifyAge) == true) {
-      showErrorAlert(
-        _context,
-        message: "Your age is under 18.",
-      );
-      return false;
+      return "Your age is under 18.";
     }
 
-    FirebaseAuthException exception = await AuthWrapper.instance
-        .createUser(username: username, email: email, password: password);
+    FirebaseAuthException exception = await authWrapper.createUser(
+      username: username,
+      email: email,
+      password: password,
+    );
 
     if (exception != null) {
-      if (exception.code == "invalid-email") {
-        showErrorAlert(
-          _context,
-          message: "Please insert a valid email.",
-        );
-        return false;
-      }
-      if (exception.code == "email-already-in-use" ||
-          exception.code == "username-already-in-use") {
-        showErrorAlert(
-          _context,
-          message: "Email or username already in use.",
-        );
-        return false;
-      }
-      showErrorAlert(
-        _context,
-        message: "Something went wrong, try later.",
-      );
-      return false;
+      return exception.message;
     }
 
     // No exception occured
 
     // Creating document on firestore
-    await FirestoreWrapper.instance.addUser(username: username);
-    return true;
+    await firestoreWrapper.addUser(username: username);
+    return "";
   }
 
-  Future<bool> didTapOnLoginAccountButton({
+  Future<String> didTapOnLoginAccountButton({
     String email,
     String password,
   }) async {
     if (email == "" || email == null) {
-      showErrorAlert(
-        _context,
-        message: "Please, insert an Email.",
-      );
-      return false;
+      return "Please, insert an email.";
     } else if (password == "" || password == null) {
-      showErrorAlert(
-        _context,
-        message: "Please, insert password.",
-      );
-      return false;
+      return "Please, insert password.";
     } else {
-      FirebaseAuthException exception = await AuthWrapper.instance
-          .loginUser(email: email, password: password);
+      FirebaseAuthException exception =
+          await authWrapper.loginUser(email: email, password: password);
 
       if (exception != null) {
-        showErrorAlert(
-          _context,
-          message: "Wrong Email or Password.",
-        );
-        return false;
+        return exception.message;
       }
-      return true;
+      return "";
     }
   }
 }

@@ -149,8 +149,14 @@ class NotificationLogic {
           datetime: DateTime.now(),
         );
 
+        bool hasUsername = newLobby.lastMessage.username != null &&
+            newLobby.lastMessage.username != "";
+        bool hasText = newLobby.lastMessage.text != null &&
+            newLobby.lastMessage.text != "";
+        bool toListen = newLobby.key != _unlistenedLobby;
+
         // Scheduling notification
-        if (!_isInitializing && newLobby.key != _unlistenedLobby)
+        if (!_isInitializing && toListen && hasUsername && hasText)
           _scheduleInstantNotification(notification: notification);
 
         // Updating history

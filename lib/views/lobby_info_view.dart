@@ -191,10 +191,12 @@ class _LobbyInfoViewState extends State<LobbyInfoView> {
   //MARK: User Actions
 
   void onLeaveLobby() {
-    LobbyLogic.didTapOnLeaveLobby(
+    LobbyLogic(context)
+        .didTapOnLeaveLobby(
       lobbyName: widget.lobby.name,
       username: AuthWrapper.instance.getCurrentUsername(),
-    ).then((leaved) {
+    )
+        .then((leaved) {
       if (leaved) {
         var count = 0;
         Navigator.popUntil(context, (route) {

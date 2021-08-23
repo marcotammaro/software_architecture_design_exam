@@ -31,7 +31,7 @@ class _SearchViewState extends State<SearchView> {
     _trendLobbies = [];
 
     // Getting trend lobbies
-    LobbyLogic.getTrendLobbies().then((value) {
+    LobbyLogic(context).getTrendLobbies().then((value) {
       value.sort((a, b) => b.users.length.compareTo(a.users.length));
       setState(() => _trendLobbies = value);
     });
@@ -257,8 +257,7 @@ class _SearchViewState extends State<SearchView> {
   // MARK: User actions
 
   void onSearch() async {
-    List<Lobby> result = await LobbyLogic.didTapOnSearchButton(
-      context,
+    List<Lobby> result = await LobbyLogic(context).didTapOnSearchButton(
       nameKeyword: _searchController.text,
     );
     print(result);
@@ -267,10 +266,15 @@ class _SearchViewState extends State<SearchView> {
         _hasSearched = true;
         _searchResults = result ?? [];
       });
+    else
+      showErrorAlert(
+        context,
+        message: "No topics found with the inserted name",
+      );
   }
 
   void onResultTap(Lobby tappedLobby) async {
-    Lobby lobby = await LobbyLogic.getLobbyWithId(tappedLobby.key);
+    Lobby lobby = await LobbyLogic(context).getLobbyWithId(tappedLobby.key);
     if (lobby != null)
       LobbyLogic.goToLobbyDetailedView(
         context,
