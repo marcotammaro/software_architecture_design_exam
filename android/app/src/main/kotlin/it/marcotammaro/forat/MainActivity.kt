@@ -1,4 +1,4 @@
-package com.example.forat
+package it.marcotammaro.forat
 
 import io.flutter.embedding.android.FlutterActivity
 

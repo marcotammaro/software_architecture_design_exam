@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.forat">
+    package="it.marcotammaro.forat">
+   <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="Forat"
         android:icon="@mipmap/ic_launcher">
