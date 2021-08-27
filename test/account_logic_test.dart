@@ -174,4 +174,29 @@ void main() {
       expect(returnValue, "");
     });
   });
+
+  group("Test didTapOnResetPassword", () {
+    test('Empty email', () async {
+      String returnValue = await controller.didTapOnResetPassword(email: "");
+      expect(returnValue, "Please, insert an email.");
+    });
+
+    test('Email badly formatted', () async {
+      when(mockAuthWrapper.resetUserPassword("test@it")).thenAnswer(
+          (realInvocation) async => FirebaseAuthException(
+              code: "123", message: "Email badly formatted."));
+
+      String returnValue =
+          await controller.didTapOnResetPassword(email: "test@it");
+      expect(returnValue, "Email badly formatted.");
+    });
+
+    test('Should pass', () async {
+      when(mockAuthWrapper.resetUserPassword("test@test.it"))
+          .thenAnswer((realInvocation) async => null);
+      String returnValue =
+          await controller.didTapOnResetPassword(email: "test@test.it");
+      expect(returnValue, "");
+    });
+  });
 }
