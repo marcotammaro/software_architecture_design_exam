@@ -169,7 +169,7 @@ class _LoginViewState extends State<LoginView> {
             fontFamily: 'OpenSans',
           ),
         ),
-        onPressed: () => print('Forgot Password Button Pressed'),
+        onPressed: onPasswordReset,
       ),
     );
   }
@@ -237,6 +237,30 @@ class _LoginViewState extends State<LoginView> {
     );
     if (value == "") {
       AccountLogic.goToLobbiesView(context);
+    } else {
+      showErrorAlert(context, message: value);
+    }
+  }
+
+  void onPasswordReset() async {
+    String value = await _accountLogic.didTapOnResetPassword(
+      email: _textFieldControllerEmail.text,
+    );
+    if (value == "") {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Done'),
+          content: const Text(
+              'A message has been sent to your email, follow the instructions to proceed to reset your password.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
     } else {
       showErrorAlert(context, message: value);
     }

@@ -99,4 +99,20 @@ class AccountLogic {
       return "";
     }
   }
+
+  Future<String> didTapOnResetPassword({
+    String email,
+  }) async {
+    if (email == "" || email == null) {
+      return "Please, insert an email.";
+    } else {
+      FirebaseAuthException exception =
+          await authWrapper.resetUserPassword(email);
+
+      if (exception != null) {
+        return exception.message;
+      }
+      return "";
+    }
+  }
 }

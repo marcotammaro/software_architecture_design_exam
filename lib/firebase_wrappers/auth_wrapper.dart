@@ -76,4 +76,14 @@ class AuthWrapper {
   void logoutUser() async {
     await _auth.signOut();
   }
+
+  /// This function send a request to reset the password.
+  Future<FirebaseAuthException> resetUserPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return null;
+    } catch (e) {
+      return e;
+    }
+  }
 }
