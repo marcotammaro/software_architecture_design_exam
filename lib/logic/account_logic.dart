@@ -115,4 +115,9 @@ class AccountLogic {
       return "";
     }
   }
+
+  bool didTapOnLogoutButton() {
+    authWrapper.logoutUser();
+    return true;
+  }
 }

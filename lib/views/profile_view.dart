@@ -8,6 +8,14 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  AccountLogic _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AccountLogic();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,7 +128,7 @@ class _ProfileViewState extends State<ProfileView> {
   // MARK: User Actions
 
   void onLogout() {
-    AuthWrapper.instance.logoutUser();
-    AccountLogic.goToLoginView(context);
+    bool done = _controller.didTapOnLogoutButton();
+    if (done) AccountLogic.goToLoginView(context);
   }
 }
