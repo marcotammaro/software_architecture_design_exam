@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forat/bloc/events/messages_event.dart';
 import 'package:forat/bloc/messages_bloc.dart';
-import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
+import 'package:forat/models/firebase_wrappers/firestore_wrapper.dart';
 import 'package:forat/models/message.dart';
 
 class MessageLogic {

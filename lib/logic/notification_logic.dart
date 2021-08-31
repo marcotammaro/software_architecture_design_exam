@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
+import 'package:forat/models/firebase_wrappers/firestore_wrapper.dart';
 import 'package:forat/models/lobby.dart';
 import 'package:forat/models/message.dart' as message;
 import 'package:forat/models/notification.dart';

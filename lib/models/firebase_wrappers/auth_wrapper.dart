@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
+import 'package:forat/models/firebase_wrappers/firestore_wrapper.dart';
 
 class AuthWrapper {
   // MARK: Singleton management

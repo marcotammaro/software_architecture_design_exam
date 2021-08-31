@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:forat/bloc/messages_bloc.dart';
-import 'package:forat/firebase_wrappers/auth_wrapper.dart';
+import 'package:forat/models/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/logic/message_logic.dart';
 import 'package:forat/logic/notification_logic.dart';

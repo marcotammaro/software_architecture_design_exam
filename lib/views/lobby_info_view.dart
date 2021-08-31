@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forat/firebase_wrappers/auth_wrapper.dart';
+import 'package:forat/models/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/logic/lobby_logic.dart';
 import 'package:forat/models/lobby.dart';
 import 'package:forat/models/topics.dart';

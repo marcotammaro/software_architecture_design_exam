@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forat/firebase_wrappers/auth_wrapper.dart';
+import 'package:forat/models/firebase_wrappers/auth_wrapper.dart';
 import 'package:forat/logic/account_logic.dart';
 
 class ProfileView extends StatefulWidget {

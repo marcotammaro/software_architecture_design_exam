@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:forat/app_launcher.dart';
-import 'package:forat/firebase_wrappers/auth_wrapper.dart';
-import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
+import 'package:forat/models/firebase_wrappers/auth_wrapper.dart';
+import 'package:forat/models/firebase_wrappers/firestore_wrapper.dart';
 import 'package:forat/views/login_view.dart';
 import 'package:forat/views/registraton_view.dart';
 

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:forat/firebase_wrappers/auth_wrapper.dart';
-import 'package:forat/firebase_wrappers/firestore_wrapper.dart';
+import 'package:forat/models/firebase_wrappers/auth_wrapper.dart';
+import 'package:forat/models/firebase_wrappers/firestore_wrapper.dart';
 import 'package:forat/logic/account_logic.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
